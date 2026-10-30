@@ -304,13 +304,14 @@ each `vX.Y.Z` tag. The repository is the app's own, so updates use electron-upda
 (the Companion needed a separate feed because it shared releases with the addon). Not signed for now (SmartScreen:
 More info → Run anyway). Addons that bring a plugin say on their CurseForge page where to get the app.
 - The repository on GitHub is `Vaderstrom/WoW-Addon-Webhooks-for-Discord` (public), with the source, the docs and the
-  release workflow (`.github/workflows/release.yml`, on `windows-latest`: tests, then `electron-builder --win
-  --publish always`). Its Releases hold the installer, its blockmap and `latest.yml`.
+  release workflow (`.github/workflows/release.yml`, on `windows-latest`: tests, a draft release for the tag,
+  `electron-builder --win --publish always` into it, then the release published). Its Releases hold the installer,
+  its blockmap and `latest.yml`.
 - The installed app looks for a newer version at start and once a day, downloads it in the background, and offers
   **Restart to update** in the window and the tray; quitting installs it too. Not while developing.
-- The installer puts the app in `%LOCALAPPDATA%Programswow-addon-webhooks-for-discord`, with a Start menu and
+- The installer puts the app in `%LOCALAPPDATA%\Programs\wow-addon-webhooks-for-discord`, with a Start menu and
   a desktop shortcut. Uninstalling (Windows Settings → Apps) leaves the settings in
-  `%APPDATA%WoW Addon Webhooks for Discord`.
+  `%APPDATA%\WoW Addon Webhooks for Discord`.
 - The README is for players (install, setup, what the app reads, code plugins, uninstall) and for addon developers
   (the plugin contract and the check mode). (Built in W8, 30 Oct 2026.)
 

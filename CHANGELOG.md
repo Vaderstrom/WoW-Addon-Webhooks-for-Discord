@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## 0.1.1 (30 Oct 2026)
+- Check mode: it removes only the pictures of its own last report (listed in `report-files.txt`); before, any
+  `001-…` picture in the folder `--out` named went. It never writes in a WoW folder, also when the SavedVariables
+  file was copied out of one. It reads a plugin as the app does (the same size limits), and runs a code plugin's
+  script with what it returned in the app last time. `report.txt` opens right in Windows PowerShell.
+- A computer whose pictures never paint waits 15 seconds for the first one only, then 5 for each.
+- Release workflow: the release is made as a draft first, the installer and update files go into it, and only then
+  is it published, so a release is never seen without its installer; a job run again uses its draft. v0.1.0 got two
+  releases for its tag, the blockmap alone in the second (put right by hand). The workflows use checkout and
+  setup-node v7 (on Node.js 24; GitHub warned that v4 targets Node.js 20).
+- Docs: paths in `docs/PLUGINS.md` §8 and `docs/SPEC.md` §10 had lost their backslashes.
+
 ## 0.1.0 (30 Oct 2026)
 The first release: one app that posts World of Warcraft addons' news to Discord through webhooks, for every addon
 that brings a plugin, with Journey Together Forever as the first. Built in milestones W1 to W8:

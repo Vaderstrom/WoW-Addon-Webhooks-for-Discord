@@ -260,6 +260,10 @@
   "check.shot": "Its screenshot: {file}.",
   "check.noShot": "Its screenshot was not found, so it would go without one.",
   "check.written": "Report: {folder}",
+  "check.gameFile": "game file {id}",
+  "check.last": "The script gets what it returned in the app last time for this file, so this is what the app would post next.",
+  "check.noLast": "The script runs as on its first run: the app has not run it on this file yet.",
+  "check.notInWow": "The report never goes in the WoW folder, so it went to {folder}.",
 
   "problemIn": "{where}: {problem}",
   "problem.not-set-up": "Finish the setup in the app's window first.",

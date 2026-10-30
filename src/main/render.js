@@ -98,20 +98,23 @@ function dropWindow() {
 
 // The next frames the window paints, after a forced repaint: the second one, or the first if no second comes soon.
 // (capturePage right after a change returned the frame before it; 28 Oct 2026, in the Journey Together Companion.)
-// No frame at all: ask again, three times 5 seconds. (A just-installed app's very first frame came after more than
-// 5 seconds, and its first board had no picture; 30 Oct 2026.)
+// No frame at all: ask again, until the first frame of the app's run three times 5 seconds, then once. (A
+// just-installed app's very first frame came after more than 5 seconds, and its first board had no picture; 30 Oct
+// 2026. A computer that never paints waits that long once, not for every picture.)
+let warmedUp = false;
 function nextFrame(w) {
   const wc = w.webContents;
   return new Promise((resolve) => {
     let last = null, count = 0, settle = null, asks = 0, giveUp = null;
-    const done = () => { clearTimeout(settle); clearTimeout(giveUp); wc.off('paint', onPaint); resolve(last); };
+    const tries = warmedUp ? 1 : 3;
+    const done = () => { clearTimeout(settle); clearTimeout(giveUp); wc.off('paint', onPaint); warmedUp = true; resolve(last); };
     const onPaint = (_e, _dirty, image) => {
       last = image; count++;
       clearTimeout(settle);
       if (count >= 2) done(); else settle = setTimeout(done, 400);
     };
     const ask = () => {
-      if (last || asks++ >= 3 || wc.isDestroyed()) return done();
+      if (last || asks++ >= tries || wc.isDestroyed()) return done();
       giveUp = setTimeout(ask, 5000);
       wc.invalidate();
     };

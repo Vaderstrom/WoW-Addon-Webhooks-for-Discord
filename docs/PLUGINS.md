@@ -230,14 +230,16 @@ The app has a check mode that reads a SavedVariables file you name and shows eve
 and picture as it would post them. It posts nothing, needs no Discord channel, never writes in the WoW folder and
 runs beside the app if that is open.
 ```
-"%LOCALAPPDATA%Programswow-addon-webhooks-for-discordWoW Addon Webhooks for Discord.exe" --check "<WoW>_retail_WTFAccount<ACCOUNT>SavedVariables<Addon>.lua"
+"%LOCALAPPDATA%\Programs\wow-addon-webhooks-for-discord\WoW Addon Webhooks for Discord.exe" --check "<WoW>\_retail_\WTF\Account\<ACCOUNT>\SavedVariables\<Addon>.lua"
 ```
 - **The plugin**: without `--plugin`, the one in the addon of the same name, in the same game version
-  (`InterfaceAddOns<Addon>Webhooks`), with its `copies` for a copy of the addon saving under another name.
-  `--plugin "<folder>"` names another, such as a code plugin's unpacked folder (its script runs as in the app).
+  (`Interface\AddOns\<Addon>\Webhooks`), with its `copies` for a copy of the addon saving under another name.
+  `--plugin "<folder>"` names another, such as a code plugin's unpacked folder. A code plugin's script runs as in
+  the app, with what it returned there last time for that file as `last` (the report says so), so the report shows
+  what the app would post next.
 - **The report**: the plugin and its problems; each group with its kept messages and their pictures (game art
   included), its news items with their pictures and the screenshot each names (found or not); the fields of each
   item, and the weekly numbers.
-- **Where**: a window, and `report.html` and `report.txt` with the pictures, in `%TEMP%WoW Addon Webhooks check`
-  or the folder `--out "<folder>"` names (only the check's own earlier files there are replaced). `--quit` saves it
-  without the window. While developing the app: `npm start -- --check "<file>"`.
+- **Where**: a window, and `report.html` and `report.txt` with the pictures, in `%TEMP%\WoW Addon Webhooks check`
+  or the folder `--out "<folder>"` names. Only the pictures of its last report there are replaced (its
+  `report-files.txt` lists them), and a folder in a WoW folder is never used. `--quit` saves it without the window. While developing the app: `npm start -- --check "<file>"`.

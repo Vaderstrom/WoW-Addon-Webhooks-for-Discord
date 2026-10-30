@@ -11,6 +11,9 @@ const outbox = require('./outbox');
 
 const MAX_LAST = 4 * 1024 * 1024; // a bigger result is used, but not kept for next time
 
+// Where a plugin's last result for one game's saved data is kept: <stateDir>/<id>/<flavor>~<account>.json.
+const lastPath = (stateDir, pid, s) => path.join(stateDir, pid, (s.flavor + '~' + s.account).replace(/[^A-Za-z0-9_.~-]/g, '_') + '.json');
+
 // run(plugin, { saved, last, ctx }) → { json } (what the script returned, as JSON text) | { problem, detail }: the
 // sandbox (src/main/run-script.js). stateDir: where each plugin's last results are kept, <stateDir>/<id>/.
 function createScripts({ run, stateDir, now }) {
@@ -18,7 +21,7 @@ function createScripts({ run, stateDir, now }) {
   let queue = Promise.resolve();
   const keyOf = (pid, s) => [pid, s.flavor, s.account].join('|');
 
-  const lastFile = (pid, s) => path.join(stateDir, pid, (s.flavor + '~' + s.account).replace(/[^A-Za-z0-9_.~-]/g, '_') + '.json');
+  const lastFile = (pid, s) => lastPath(stateDir, pid, s);
   function readLast(pid, s) {
     try { return JSON.parse(fs.readFileSync(lastFile(pid, s), 'utf8')); } catch (e) { return null; }
   }
@@ -94,4 +97,4 @@ function createScripts({ run, stateDir, now }) {
   return { refresh, result, problem, retry, forget };
 }
 
-module.exports = { createScripts };
+module.exports = { createScripts, lastPath };

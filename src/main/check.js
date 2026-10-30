@@ -19,7 +19,10 @@ const { registerScheme, renderCard } = require('./render');
 const { createGameArt } = require('./game-art');
 const { gamePicture } = require('./game-picture');
 const { runScript } = require('./run-script');
+const { lastPath } = require('./scripts');
 
+const APP_FOLDER = 'WoW Addon Webhooks for Discord'; // the app's settings folder in %APPDATA%
+const FILE_LIST = 'report-files.txt';
 const TEXTS = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'locales', 'enUS.json'), 'utf8'));
 const fill = (t, v) => String(t || '').replace(/\{(\w+)\}/g, (_, k) => (v[k] != null ? v[k] : ''));
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -36,21 +39,30 @@ function args(argv) {
 function gameOf(file) {
   const flavorDir = path.resolve(file, '..', '..', '..', '..', '..');
   const wowFolder = path.dirname(flavorDir), flavor = path.basename(flavorDir);
-  return wow.flavors(wowFolder).includes(flavor) ? { wowFolder, flavor, flavorDir } : null;
+  const account = path.basename(path.resolve(file, '..', '..'));
+  return wow.flavors(wowFolder).includes(flavor) ? { wowFolder, flavor, flavorDir, account } : null;
 }
 
-// The plugin, as the app would find or install it: { plugin } | { problem, detail }.
-function pluginFor(dir, svName, game) {
+// Whether a folder is in a WoW folder (it or a parent holds a game version), where the check never writes.
+function inWow(dir) {
+  for (let d = path.resolve(dir); ; d = path.dirname(d)) {
+    if (wow.flavors(d).length) return true;
+    if (path.dirname(d) === d) return false;
+  }
+}
+
+// The plugin, read and checked as the app reads it (src/main/plugins.js): { plugin } | { problem, detail }.
+function pluginFor(dir, svName, named) {
   const file = path.join(dir, plugins.MANIFEST);
-  let json;
-  try { json = JSON.parse(fs.readFileSync(file, 'utf8').replace(/^﻿/, '')); } catch (e) { return { problem: 'bad', detail: fs.existsSync(file) ? 'not JSON' : 'no ' + file }; }
-  const code = json && json.script != null;
-  const res = plugins.checkManifest(json, dir, { code });
-  if (!res.plugin) return res;
-  if (code) return res;
-  // A data plugin in an addon's folder, maybe a copy of it saving elsewhere (`copies`).
+  let res = plugins.readManifest(file, { code: true });
+  if (res && res.problem === 'not-code') res = plugins.readManifest(file);
+  if (!res) return { problem: 'bad', detail: 'no ' + file };
+  if (!res.plugin || res.plugin.source === 'code') return res;
+  // A data plugin in an addon's folder, maybe a copy of it saving elsewhere (`copies`): by the addon's folder name,
+  // as the app finds it. A plugin named with --plugin (a repository's folder, say) may also go by the saved file's.
   const addon = path.basename(path.dirname(dir));
-  return { plugin: { ...res.plugin, ...(res.plugin.copies[addon] || res.plugin.copies[svName] || {}), addonDir: path.dirname(dir) } };
+  const copy = res.plugin.copies[addon] || (named && res.plugin.copies[svName]) || {};
+  return { plugin: { ...res.plugin, ...copy, addonDir: path.dirname(dir) } };
 }
 
 async function report(opts) {
@@ -61,7 +73,7 @@ async function report(opts) {
   const svName = path.basename(file, path.extname(file));
   const game = gameOf(file);
   const dir = path.resolve(opts.plugin || (game ? path.join(wow.addonsFolder(game.wowFolder, game.flavor), svName, 'Webhooks') : path.join(path.dirname(file), 'Webhooks')));
-  const found = pluginFor(dir, svName, game);
+  const found = pluginFor(dir, svName, !!opts.plugin);
   const parts = [`<h1>${esc(TEXTS['check.title'])}</h1>`, `<p class="hint">${esc(fill(TEXTS['check.what'], { file, dir }))}</p>`];
   if (!found.plugin) {
     const why = found.problem === 'too-new' ? TEXTS['plugin.too-new'] : fill(TEXTS['check.badPlugin'], { detail: found.detail || found.problem });
@@ -78,10 +90,18 @@ async function report(opts) {
   // The outbox: the addon's, or what the code plugin's script makes of the saved data (run as in the app).
   let r;
   if (p.source === 'code') {
+    // As the app runs it (src/main/scripts.js): the same size limit, and `last`, what it returned in the app last time
+    // for this file (read only), so what it would post next shows.
     let saved;
-    try { saved = parse(fs.readFileSync(file, 'latin1')); } catch (e) { r = { error: 'unreadable', detail: e.message }; }
+    if (fs.statSync(file).size > outbox.MAX_BYTES) r = { error: 'too-big' };
+    else try { saved = parse(fs.readFileSync(file, 'latin1')); } catch (e) { r = { error: 'unreadable', detail: e.message }; }
     if (saved) {
-      const res = await runScript(p, { saved, last: null, ctx: { now: Math.floor(Date.now() / 1000) } });
+      let last = null;
+      if (game) try { last = JSON.parse(fs.readFileSync(lastPath(path.join(app.getPath('appData'), APP_FOLDER, 'plugin-data'), p.id, game), 'utf8')); } catch (e) { last = null; }
+      const note = last ? TEXTS['check.last'] : TEXTS['check.noLast'];
+      say(note);
+      parts.push(`<p class="hint">${esc(note)}</p>`);
+      const res = await runScript(p, { saved, last, ctx: { now: Math.floor(Date.now() / 1000) } });
       if (res.problem) r = { error: 'script', detail: fill(TEXTS['script.' + res.problem], { detail: res.detail || '?' }) };
       else { let box; try { box = JSON.parse(res.json); } catch (e) { box = undefined; } r = outbox.readBox(box, p); }
     }
@@ -121,7 +141,7 @@ async function report(opts) {
         for (const it of items) {
           const pic = typeof it.picture === 'string' ? loadPicture(p, it.picture) : it.picture ? gamePicture(png, it.picture) : null;
           const notes = [];
-          if (it.picture && !pic) notes.push(fill(TEXTS['check.noPicture'], { picture: typeof it.picture === 'string' ? it.picture : 'game ' + it.picture.game }));
+          if (it.picture && !pic) notes.push(fill(TEXTS['check.noPicture'], { picture: typeof it.picture === 'string' ? it.picture : fill(TEXTS['check.gameFile'], { id: it.picture.game }) }));
           if (it.screenshot) {
             const shot = game && screenshots.find(screenshots.folder(game.wowFolder, game.flavor), it.screenshot);
             notes.push(shot ? fill(TEXTS['check.shot'], { file: path.basename(shot) }) : TEXTS['check.noShot']);
@@ -155,22 +175,28 @@ function page(parts) {
 
 async function run(opts) {
   // Its own folder: a check runs beside the app (two at once may not share one).
-  app.setPath('userData', path.join(app.getPath('appData'), 'WoW Addon Webhooks for Discord', 'check'));
+  app.setPath('userData', path.join(app.getPath('appData'), APP_FOLDER, 'check'));
   registerScheme();
   app.on('window-all-closed', () => app.quit());
   await app.whenReady();
   let res;
   try { res = await report(opts); } catch (e) { res = { lines: [String(e && e.stack || e)], html: null }; }
-  const game = opts.file ? gameOf(path.resolve(opts.file)) : null;
-  let out = path.resolve(opts.out || path.join(os.tmpdir(), 'WoW Addon Webhooks check'));
-  if (game && (out + path.sep).toLowerCase().startsWith((game.wowFolder + path.sep).toLowerCase())) out = path.join(os.tmpdir(), 'WoW Addon Webhooks check');
+  const tmp = path.join(os.tmpdir(), 'WoW Addon Webhooks check');
+  let out = path.resolve(opts.out || tmp);
+  if (inWow(out)) { res.lines.push(fill(TEXTS['check.notInWow'], { folder: tmp })); out = tmp; }
   for (const l of res.lines) console.log(l);
   if (!res.html) { app.exit(1); return; }
-  // Only its own files from an earlier report go: --out may name a folder with other things in it.
+  // Only its own pictures from an earlier report go, as report-files.txt lists them: --out may name a folder with
+  // other things in it.
   fs.mkdirSync(out, { recursive: true });
-  for (const f of fs.readdirSync(out)) if (/^(\d{3}-.+\.(png|jpg)|report\.(html|txt))$/.test(f)) fs.rmSync(path.join(out, f), { force: true });
-  for (const f of res.files || []) fs.writeFileSync(path.join(out, f.name), f.data);
-  fs.writeFileSync(path.join(out, 'report.txt'), res.lines.join('\n') + '\n');
+  let old = [];
+  try { old = fs.readFileSync(path.join(out, FILE_LIST), 'utf8').split(/\r?\n/); } catch (e) { old = []; }
+  for (const f of old) if (/^\d{3}-[\w.-]+\.(png|jpg)$/.test(f)) fs.rmSync(path.join(out, f), { force: true });
+  const files = res.files || [];
+  for (const f of files) fs.writeFileSync(path.join(out, f.name), f.data);
+  fs.writeFileSync(path.join(out, FILE_LIST), files.map((f) => f.name).join('\n') + '\n');
+  // With a byte order mark: Windows PowerShell 5.1 reads UTF-8 without one as another code page.
+  fs.writeFileSync(path.join(out, 'report.txt'), '\uFEFF' + res.lines.join('\r\n') + '\r\n');
   fs.writeFileSync(path.join(out, 'report.html'), res.html);
   console.log(fill(TEXTS['check.written'], { folder: out }));
   if (process.argv.includes('--quit')) { app.quit(); return; }
@@ -181,4 +207,4 @@ async function run(opts) {
   w.loadFile(path.join(out, 'report.html'));
 }
 
-module.exports = { args, run, report, gameOf };
+module.exports = { args, run, report, gameOf, inWow };

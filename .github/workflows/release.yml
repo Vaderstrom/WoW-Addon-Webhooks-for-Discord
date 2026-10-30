@@ -10,12 +10,25 @@ jobs:
   release:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm ci
       - run: npm test
+      # The release first, as a draft: electron-builder uploading its files at once made two releases for v0.1.0, the
+      # blockmap alone in the second. It uploads into this one; players and installed apps see it only once it has
+      # every file. A job run again finds its draft and uses it. The notes are written on GitHub.
+      - run: |
+          gh release view "$env:GITHUB_REF_NAME" *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create "$env:GITHUB_REF_NAME" --draft --title "WoW Addon Webhooks for Discord $($env:GITHUB_REF_NAME.TrimStart('v'))" --notes " "
+          }
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npx electron-builder --win --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: gh release edit "$env:GITHUB_REF_NAME" --draft=false
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

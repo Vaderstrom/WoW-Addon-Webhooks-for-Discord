@@ -22,5 +22,14 @@ test('the game of a SavedVariables file is the WoW folder and version it sits in
   const game = check.gameOf(path.join(sv, 'Addon.lua'));
   assert.strictEqual(game && game.flavor, '_retail_');
   assert.strictEqual(game.wowFolder, wow);
+  assert.strictEqual(game.account, 'ACC');
   assert.strictEqual(check.gameOf(path.join(wow, 'Addon.lua')), null);
+});
+
+test('the report never goes in a WoW folder, wherever the SavedVariables file is', () => {
+  const wow = tmpDir('awd-check-');
+  fs.mkdirSync(path.join(wow, '_retail_', 'WTF', 'Account'), { recursive: true });
+  assert.strictEqual(check.inWow(wow), true);
+  assert.strictEqual(check.inWow(path.join(wow, '_retail_', 'Interface', 'AddOns', 'MyAddon', 'not-yet')), true);
+  assert.strictEqual(check.inWow(tmpDir('awd-out-')), false);
 });

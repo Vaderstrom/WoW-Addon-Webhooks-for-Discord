@@ -101,14 +101,17 @@ function dropWindow() {
 // No frame at all: ask again, until the first frame of the app's run three times 5 seconds, then once. (A
 // just-installed app's very first frame came after more than 5 seconds, and its first board had no picture; 30 Oct
 // 2026. A computer that never paints waits that long once, not for every picture.)
+// Empty frames do not count: a fresh offscreen window's first paint is always empty, about 200 ms before its real
+// first frame, and it used to stand in for it (a cold check-mode run's first board: "no frame painted"; 30 Oct 2026).
 let warmedUp = false;
 function nextFrame(w) {
   const wc = w.webContents;
   return new Promise((resolve) => {
     let last = null, count = 0, settle = null, asks = 0, giveUp = null;
     const tries = warmedUp ? 1 : 3;
-    const done = () => { clearTimeout(settle); clearTimeout(giveUp); wc.off('paint', onPaint); warmedUp = true; resolve(last); };
+    const done = () => { clearTimeout(settle); clearTimeout(giveUp); wc.off('paint', onPaint); if (last) warmedUp = true; resolve(last); };
     const onPaint = (_e, _dirty, image) => {
+      if (!image || image.isEmpty()) return;
       last = image; count++;
       clearTimeout(settle);
       if (count >= 2) done(); else settle = setTimeout(done, 400);
@@ -224,4 +227,4 @@ function renderCard(plugin, kindId, entry, group, now, gamePng) {
   return run;
 }
 
-module.exports = { registerScheme, renderCard };
+module.exports = { registerScheme, renderCard, nextFrame }; // nextFrame: for its test

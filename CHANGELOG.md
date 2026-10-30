@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.1.5 (30 Oct 2026)
+- A picture could fail on a cold start ("The picture could not be drawn", template: no frame painted): a fresh
+  window's first paint is always empty, and it was taken for the picture when the real frame came more than 400 ms
+  later. Empty paints no longer count. Seen in a check-mode run of the Journey Together board; a player's first board
+  after starting Windows could fail the same way.
+
 ## 0.1.4 (30 Oct 2026)
 - Setup no longer sends anything to the first channel by itself: step 3 starts with no lines and guides the player
   to draw them (for every fellowship, or one), with the addon's suggestions marked "suggested". **Post** waits for

@@ -64,7 +64,7 @@ Ship the folder in your addon's package. WoW ignores it; the app finds it in eve
 | `savedVariables` | The file name in `WTF\Account\<ACCOUNT>\SavedVariables\` without `.lua` (the account-wide file; per-character files are not read). WoW names it after the addon's folder: letters, digits, `_` and `-`. |
 | `outbox` | Where the posts are in that file: the global's name and the keys, joined with `.`. Only this table is read. |
 | `group` | The word for what a channel follows ("fellowship", "guild"), used in the window. |
-| `kinds` | The kinds of post. `type`: `kept` (one message kept up to date) or `news` (a new message per item). `default`: wired to the first channel during setup (`docs/SPEC.md` §8). `mention`: the player may have a line from it mention a role (`docs/SPEC.md` §5.2). At most 12. |
+| `kinds` | The kinds of post. `type`: `kept` (one message kept up to date) or `news` (a new message per item). `default`: marked "suggested" for the player, who draws the lines (nothing is wired by itself; `docs/SPEC.md` §8). `mention`: the player may have a line from it mention a role (`docs/SPEC.md` §5.2). At most 12. |
 | `templates` | A kept kind (or a news kind) whose picture the app draws from an HTML page (§6). |
 | `empty` | Optional: what the window says when the outbox is there but has no groups, such as why and what to do ("None of your characters is in a fellowship…"). At most 200 characters. Without it the app says the addon has nothing to post yet. |
 | `weekly` | Optional: the plugin offers a weekly summary (§5), with its texts. `{group}`, `{name}`, `{from}`, `{to}`, `{list}` are filled in by the app. |

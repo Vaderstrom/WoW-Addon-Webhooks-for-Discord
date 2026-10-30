@@ -390,15 +390,6 @@ function pluginsView(list) {
   });
 }
 
-// The first channel starts with a line from Every {group} for each kind its plugin suggests (SPEC §8, step 3). Later
-// channels start with none: the player draws what they want.
-function linesForFirst(channelId) {
-  if (settings.channels().length !== 1 || settings.lines().length) return;
-  for (const p of used()) {
-    for (const k of p.kinds.filter((x) => x.default)) settings.addLine(flows.kindBox(p.id, flows.EVERY, k.id), flows.channelBox(channelId), now());
-  }
-}
-
 // The places a line may end at: each channel and its threads.
 const placesNow = () => settings.channels().flatMap((c) => [flows.channelBox(c.id), ...c.threads.map((t) => flows.threadBox(c.id, t.id))]);
 // What flows.check needs to know about the boxes.
@@ -575,7 +566,6 @@ function ipc() {
       settings.removeChannel(id); hooks.delete(id);
       return { ok: false, problem: e.code === 'network' ? 'connectOffline' : 'connectRefused' };
     }
-    linesForFirst(id);
     return { ok: true, id, name: settings.channels().find((c) => c.id === id).name };
   });
   ipcMain.handle('renameChannel', (_e, id, name) => ({ ok: settings.rename(str(id, 64), str(name, 200)) }));

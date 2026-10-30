@@ -55,7 +55,13 @@ encrypted, and never shows it to an addon or plugin.
 
 ### 3. Choose what goes where
 On the left, what your addons post; on the right, your Discord channels. Each line sends one kind of post to one
-channel. The lines your addons suggest are drawn already, so most players just press **Post**.
+channel. Nothing goes to Discord until you draw a line:
+
+1. **Choose whose posts.** **Every fellowship** sends them for all your fellowships, now and later. Open one by its
+   name (here **Iron Oath**) to send only its own.
+2. **Drag from a post's dot to your channel.** The ones the addon suggests say *suggested*; the progress board is a
+   good start.
+3. **Click a line** to add rules to it, such as a role to mention.
 
 ![Step 3: Choose what goes where](manual/03-what-goes-where.png)
 

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.1.4 (30 Oct 2026)
+- Setup no longer sends anything to the first channel by itself: step 3 starts with no lines and guides the player
+  to draw them (for every fellowship, or one), with the addon's suggestions marked "suggested". **Post** waits for
+  a line.
+
 ## 0.1.3 (30 Oct 2026)
 - Electron 44.9.1 (was 44.7.2), for a security fix: it stops trusting the compromised eMudhra intermediate
   certificates (GHSA-jr5w-w6x2-84p9).

@@ -62,7 +62,12 @@
   "testText": "WoW Addon Webhooks for Discord is connected. Posts from your addons will appear here.",
 
   "s3Title": "Choose what goes where",
-  "s3Text": "Each line takes what an addon posts, on the left, to a Discord channel, on the right. The ones your addons suggest are drawn already, so you can just press Post. You can change it later under Channels.",
+  "s3Text": "Nothing goes to Discord until you draw a line: from what an addon posts, on the left, to a channel, on the right. You can change it later under Channels.",
+  "s3How1": "Choose whose posts: {every} sends them for all, now and later. Open one by its name to send only its own.",
+  "s3How2": "Drag from a post's dot to your channel. Start with the ones marked suggested, such as a progress board.",
+  "s3How3": "Click a line to add rules to it, such as a role to mention. Then press Post.",
+  "s3Need": "Draw at least one line to post.",
+  "suggested": "suggested",
   "finish": "Post",
   "posting": "Posting…",
   "pinIt": "Posted. Pin the kept messages in Discord so everyone finds them.",

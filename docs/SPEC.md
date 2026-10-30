@@ -81,7 +81,8 @@ Decided 29 Oct 2026: the player draws where posts go, as flows. Built in milesto
 the flows became **two columns** (W5): what an addon posts on the left, where it goes in Discord on the right, and
 the rules on the lines. The player's words: "Should only be mapping between addon information => webhook with its
 mapped text channel"; step boxes in between read as a second process. A new player should find it easy at once:
-find the addon, paste one webhook, press Post.
+find the addon, paste one webhook, draw where posts go, press Post. (30 Oct 2026: nothing is drawn by itself any
+more; the player chooses Every {group} or one group for each line, guided, see §8 step 3.)
 
 ### 5.1 Flows
 The player decides what goes where by drawing lines on the **Channels** page (§8), from what an addon posts to where
@@ -246,8 +247,15 @@ group was saved in, and turns it into a PNG.
    - "Keep this link to yourself: anyone who has it can post in that channel. The app keeps it on this computer,
      encrypted."
 3. **Choose what goes where.** The Flows canvas (§5.1) with the channel just connected.
-   - To start, each kind its plugin suggests (`default`) has a line from **Every {group}** to that channel, so most
-     players only press **Post**. "You can change it later under Channels."
+   - It starts with **no lines** (decided 30 Oct 2026: one webhook should not get everything by itself; the player
+     chooses whether a post goes for every group or one). "Nothing goes to Discord until you draw a line: from what an
+     addon posts, on the left, to a channel, on the right. You can change it later under Channels." Then three
+     numbered lines: "Choose whose posts: Every fellowship sends them for all, now and later. Open one by its name
+     to send only its own." (the first plugin's group word), "Drag from a post's dot to your channel. Start with the
+     ones marked suggested, such as a progress board.", "Click a line to add rules to it, such as a role to mention.
+     Then press Post."
+   - Kinds the plugin suggests (`default`) say "suggested" under their name until they have a line.
+   - **Post** waits for a line: "Draw at least one line to post." beside it until then.
    - **Add a channel** connects another without leaving the step; lines and their rules work as on the Channels page.
    - Kept kinds with a picture show **What Discord shows**.
    - **Post** posts the kept messages and opens Home: "Posted. Pin the board in Discord so everyone finds it."

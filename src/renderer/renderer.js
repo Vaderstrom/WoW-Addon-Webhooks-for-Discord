@@ -228,6 +228,9 @@
       pics.append(...inUse().flatMap(reachedPreviews));
       editor.draw($('s3Editor'), state, { extra: pics });
       $('finish').disabled = !state.flows.anyRoute;
+      const first = inUse()[0];
+      $('s3How1').textContent = fill(T.s3How1, { every: fill(T.everyGroup, { group: first ? first.group : '' }).trim() });
+      $('s3Need').style.visibility = state.flows.anyRoute ? 'hidden' : 'visible';
     }
   }
 

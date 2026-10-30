@@ -113,8 +113,11 @@ window.createFlowEditor = function (deps) {
         y += 28;
         if (!open) continue;
         for (const kind of p.kinds) {
-          boxes.push({ id: kindBox(p.id, gid, kind.id), type: 'kind', x: 16, y, w: treeW - 16, title: kind.name,
-            sub: kind.type === 'kept' ? T.kept : kind.weekly ? T.weeklyMade : null, help: kind.help });
+          // What the addon suggests (its default) is marked until it has a line: the player draws it (SPEC §8, step 3).
+          const id = kindBox(p.id, gid, kind.id);
+          const subs = [kind.type === 'kept' ? T.kept : kind.weekly ? T.weeklyMade : null,
+            kind.default && !lines.some((l) => l.from === id) ? T.suggested : null].filter(Boolean);
+          boxes.push({ id, type: 'kind', x: 16, y, w: treeW - 16, title: kind.name, sub: subs.join(' · ') || null, help: kind.help });
           y += 50;
         }
       }

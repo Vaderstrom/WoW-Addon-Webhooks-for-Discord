@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## 0.1.2 (30 Oct 2026)
+- A new icon, the same in the window, the tray, Windows notices and the installer: the Journey Together Forever
+  crest with three webhook nodes in it, drawn for each size Windows uses (`npx electron tools/make-icon.js`).
+  Before, the tray showed a resized picture that did not match.
+- Updates ask first: when a new version is out, a box (or, in the tray, a Windows notice) asks **Download and
+  update** or **Later**; nothing downloads by itself. The window shows the download's progress, and **Try again**
+  if it fails. Before, updates downloaded in the background and waited for **Restart to update**.
+- The window looks like World of Warcraft: dark leather, gold-framed panels, gold titles, red-and-gold buttons, and
+  item-quality colours on the Channels board, titles, tabs and buttons in the Cinzel font (bundled, SIL Open Font
+  License), a title bar with the crest, and a heading on each tab. Before, it was a plain dark look.
+- Player words in the window: the Flows tab is now **Channels**, a webhook URL a **webhook link**, "The flows in
+  words" **In plain words**, and an addon's plugin **Comes with the addon** (without its folder name); help texts
+  without "kind", "field" or "plugin" where a player would not say them.
+- A manual for players, `docs/MANUAL.md`, with pictures of every page.
+
 ## 0.1.1 (30 Oct 2026)
 - Check mode: it removes only the pictures of its own last report (listed in `report-files.txt`); before, any
   `001-…` picture in the folder `--out` named went. It never writes in a WoW folder, also when the SavedVariables

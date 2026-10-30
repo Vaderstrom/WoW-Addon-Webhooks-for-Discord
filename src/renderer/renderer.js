@@ -71,7 +71,14 @@
   async function draw() {
     state = await api.state();
     const s = state.settings;
-    $('update').hidden = !state.updateReady;
+    // A newer version (SPEC §10): named, downloading, or failed. Nothing is downloaded until the player presses.
+    const u = state.update;
+    $('update').hidden = !u;
+    if (u) {
+      $('updateText').textContent = fill(T['update.' + u.state], { version: u.version, current: state.version, percent: u.percent || 0 });
+      $('updateButton').hidden = u.state === 'downloading';
+      $('updateButton').textContent = u.state === 'failed' ? T['update.retry'] : T['update.download'];
+    }
     const setUp = s.setupDone || s.channels.some((c) => c.posted);
     $('wizard').hidden = setUp;
     $('home').hidden = !setUp;
@@ -322,7 +329,7 @@
         if (p.folder) li.append(removeButton(p.folder));
         return li;
       }
-      li.append(pluginHead(p), el('div', 'sub', p.code ? fill(T.codePlugin, { addon: p.addon }) : T.dataPlugin + ' · ' + p.addon),
+      li.append(pluginHead(p), el('div', 'sub', p.code ? fill(T.codePlugin, { addon: p.addon }) : T.dataPlugin),
         checkbox(T.inUse, p.used === true, async (on) => { await api.usePlugin(p.id, on); refresh(); }));
       if (p.same && p.same.length) li.append(el('p', 'hint', fill(T.sameAddon, { names: p.same.join(', ') })));
       if (p.script) li.append(el('p', 'problem', fill(T['script.' + p.script.problem], { detail: p.script.detail || '?' })));
@@ -393,7 +400,7 @@
     if (res.ok) drawWarning(res);
     else if (res.problem) say($('addonsMsg'), T['install.' + res.problem], 'problem');
   };
-  $('restartUpdate').onclick = () => api.restartUpdate();
+  $('updateButton').onclick = () => api.downloadUpdate();
   api.onStatus(() => refresh());
   await refresh();
 })();

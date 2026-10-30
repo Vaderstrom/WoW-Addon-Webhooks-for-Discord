@@ -1,3 +1,5 @@
+<img src="assets/icon.png" width="96" alt="">
+
 # WoW Addon Webhooks for Discord
 
 Designed and developed by **Vaderstrom**.
@@ -14,6 +16,7 @@ Not made by or affiliated with Blizzard Entertainment or Discord. World of Warcr
 Entertainment.
 
 ## For players
+The [manual](docs/MANUAL.md) shows every step with pictures.
 
 ### Install
 1. Download `WoW-Addon-Webhooks-for-Discord-Setup-<version>.exe` from
@@ -22,20 +25,20 @@ Entertainment.
 3. The app is not signed yet, so Windows may say "Windows protected your PC". Press **More info**, then **Run
    anyway**.
 
-The app updates itself: it checks for a new version when it starts and once a day, downloads it in the background
-and offers **Restart to update** in its window and in the tray.
+The app keeps itself up to date: it looks for a new version when it starts and once a day, and asks before it
+downloads one (**Download and update** or **Later**).
 
 ### Set up
 The first time, the window takes you through three steps:
 1. **Find your addons.** The app finds the addons that can post to Discord in your WoW folder. Addons save their data
    when you log out, type `/reload` or close the game, so do that once if nothing is found.
 2. **Connect a Discord channel.** In Discord, open the channel's settings → Integrations → Webhooks → New Webhook →
-   Copy Webhook URL, and paste it in the app. **Connect** sends a test message to the channel.
+   Copy Webhook URL, and paste the link in the app. **Connect** sends a test message to the channel.
 3. **Choose what goes where.** Each addon suggests what to post; most players just press **Post**. Pin the board
    in Discord so everyone finds it.
 
 After that the app waits in the tray. Closing the window keeps it running there; **Quit** in the tray stops it.
-Under **Flows** you can send each kind of post to its own channel or thread, mention a role, keep quiet hours, or
+Under **Channels** you can send each kind of post to its own channel or thread, mention a role, keep quiet hours, or
 gather posts into a daily one.
 
 **Posts arrive after a session, not live**: WoW writes an addon's saved data only when you log out, type `/reload`
@@ -46,14 +49,14 @@ same thing twice.
 - It reads only what each addon's plugin names: the addon's saved data (its SavedVariables file, which it parses and
   never runs), the one screenshot a post names, and the game's own loading-screen art from your game folder.
 - It never writes in your WoW folder.
-- A **webhook URL works like a password**: anyone who has it can post in that channel. The app keeps it on this
+- **Keep a webhook link to yourself**: anyone who has it can post in that channel. The app keeps it on this
   computer, stored encrypted, and never shows it to an addon or plugin.
 
 ### Code plugins
 Most addons bring a plugin of plain files, which the app finds by itself. Some may offer a **code plugin** (a
 `.zip` file) instead. Install one under **Addons → Install a code plugin…**, and only if you trust whoever made it.
 The app runs it locked away: it can read the saved data of the addon it is for, and nothing else on your computer.
-It cannot see your webhook URLs or reach the internet.
+It cannot see your webhook links or reach the internet.
 
 ### Uninstall
 Windows Settings → Apps → Installed apps → **WoW Addon Webhooks for Discord** → Uninstall. Your settings stay in
@@ -109,9 +112,10 @@ publishes it with its update feed on this repository's Releases; installed apps 
   `screenshots.js` finds the screenshot a post names.
 - `src/main/game-art.js` and `casc.js` read the game's own art; `game-picture.js` shapes it for a post.
 - `src/main/install.js`, `zip.js`, `scripts.js` and `run-script.js`: code plugins, installed and run locked away.
-- `src/main/check.js` the check mode; `updater.js` updates; `wow.js` the WoW folder and game versions.
+- `src/main/check.js` the check mode; `updater.js` updates (asked first); `wow.js` the WoW folder and game versions.
 - `src/main/main.js` tray, window, file and game watching; `src/renderer/` the window; `src/locales/enUS.json` its
   texts.
 
 ## License
-MIT, see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE). The Cinzel font in `assets/fonts` is by The Cinzel Project Authors, under the SIL Open
+Font License 1.1 ([`assets/fonts/OFL.txt`](assets/fonts/OFL.txt)).

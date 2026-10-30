@@ -7,10 +7,10 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="top"><h1 data-t="appName"></h1></header>
+<header class="top"><img src="../../assets/icon.png" alt=""><h1 data-t="appName"></h1></header>
 
 <section id="update" class="banner" hidden>
-  <span class="grow" data-t="updateReady"></span><button id="restartUpdate" class="primary" data-t="restartUpdate"></button>
+  <span class="grow" id="updateText"></span><button id="updateButton" class="primary"></button>
 </section>
 
 <!-- The first time: three steps, one at a time. -->
@@ -61,6 +61,8 @@
   </nav>
 
   <section class="tab" data-tab="home">
+    <h2 class="page-title" data-t="tabHome"></h2>
+    <p class="intro" data-t="homeIntro"></p>
     <div id="newPlugins"></div>
     <div class="card status" id="statusCard">
       <p id="statusMain" class="big"></p>
@@ -75,11 +77,13 @@
   </section>
 
   <section class="tab" data-tab="flows">
+    <h2 class="page-title" data-t="tabFlows"></h2>
     <p class="intro" data-t="flowsIntro"></p>
     <div id="flowEditor"></div>
   </section>
 
   <section class="tab" data-tab="addons">
+    <h2 class="page-title" data-t="tabAddons"></h2>
     <p class="intro" data-t="addonsIntro"></p>
     <ul id="addons" class="list"></ul>
     <div class="row"><button id="addonsLook" data-t="lookAgain"></button><button id="addonsInstall" data-t="installCode"></button></div>
@@ -88,6 +92,8 @@
   </section>
 
   <section class="tab" data-tab="settings">
+    <h2 class="page-title" data-t="tabSettings"></h2>
+    <p class="intro" data-t="settingsIntro"></p>
     <div class="card">
       <h2 data-t="s1Where"></h2>
       <div id="setGames"></div>

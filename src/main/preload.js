@@ -30,6 +30,6 @@ contextBridge.exposeInMainWorld('awd', {
   reload: () => ipcRenderer.invoke('reload'),
   setPaused: (paused) => ipcRenderer.invoke('setPaused', paused),
   setOption: (key, on) => ipcRenderer.invoke('setOption', key, on),
-  restartUpdate: () => ipcRenderer.invoke('restartUpdate'),
+  downloadUpdate: () => ipcRenderer.invoke('downloadUpdate'),
   onStatus: (fn) => ipcRenderer.on('status', (_e, st) => fn(st)),
 });

@@ -1,7 +1,7 @@
 {
   "name": "wow-addon-webhooks-for-discord",
   "productName": "WoW Addon Webhooks for Discord",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Posts World of Warcraft addons' news to Discord channels through webhooks.",
   "author": "Vaderstrom",
   "license": "MIT",
@@ -40,7 +40,7 @@
           ]
         }
       ],
-      "icon": "assets/icon.png"
+      "icon": "assets/icon.ico"
     },
     "nsis": {
       "oneClick": true,

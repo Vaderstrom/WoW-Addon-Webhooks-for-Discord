@@ -1,75 +1,119 @@
-/* A plain dark look of its own: the app belongs to no one addon (Journey Together's parchment stays in its plugin). */
+/* A World of Warcraft look of its own: dark leather, gold-framed panels, gold titles and red buttons as in the game's
+   own windows, drawn with CSS only (no Blizzard art). The app belongs to no one addon: Journey Together's parchment
+   stays in its plugin. The flow boxes keep their sizes: flow-editor.js lays them out by them. */
 :root {
-  --bg: #1E1F24; --card: #2A2C33; --card2: #24262C; --line: #3C3F48; --text: #E6E7EA; --text2: #A3A6AE;
-  --accent: #2FA4A9; --accent-hi: #45C2C7; --red: #E5584F; --green: #3FB27F; --amber: #E0A84B;
+  --bg: #120D09; --card: #1C1610; --card2: #15100B; --line: #4A3A22; --frame: #8A6D35; --frame-hi: #C9A253;
+  --text: #EDE3CC; --text2: #B0A285; --gold: #FFD100; --gold-soft: #E8C766;
+  --accent: #D9A93F; --accent-hi: #FFD36B; --red: #E85A44; --green: #5FCB4A; --amber: #FF9F1C;
   --font: 'Segoe UI', Arial, sans-serif;
+  --title: 'Cinzel', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
 }
+/* Cinzel (SIL Open Font License, assets/fonts/OFL.txt): carved capitals for titles, tabs and buttons; body text stays
+   Segoe UI so it reads easily. Bundled, since the app never goes online for its look. */
+@font-face { font-family: 'Cinzel'; src: url('../../assets/fonts/Cinzel.ttf') format('truetype'); font-weight: 400 900; font-display: block; }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-html, body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 var(--font); }
+html { background: var(--bg); }
+body { margin: 0; min-height: 100vh; color: var(--text); font: 14px/1.5 var(--font);
+  background: radial-gradient(ellipse 120% 60% at 50% 0%, #2B1F14 0%, #17110C 55%, var(--bg) 100%) fixed; }
 main, .top, .banner { max-width: 720px; margin: 0 auto; }
 main { padding: 0 20px 30px; }
-.top { padding: 16px 20px 10px; }
-.top h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.2px; }
+/* The title bar: the crest and the app's name on a dark band between two gold rules, as a game window's title. */
+.top { display: flex; align-items: center; gap: 14px; margin-top: 12px; margin-bottom: 14px; padding: 8px 20px 8px 14px;
+  border-top: 1px solid var(--frame); border-bottom: 1px solid var(--frame);
+  background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(58,40,22,0.75) 12%, rgba(58,40,22,0.75) 88%, rgba(0,0,0,0) 100%);
+  box-shadow: 0 1px 0 #000, 0 -1px 0 #000; }
+.top img { width: 50px; height: 50px; flex: none; margin: -14px 0; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); }
+.top h1 { margin: 0; font: 700 21px/1.2 var(--title); color: var(--gold); letter-spacing: 1px;
+  text-shadow: 0 1px 0 #000, 0 2px 3px rgba(0,0,0,0.8), 0 0 14px rgba(255,190,60,0.25); }
+h2, h3 { font-family: var(--title); color: var(--gold-soft); }
+/* Each tab's heading: its name between two gold rules, and one line on what the page is for. */
+.page-title { display: flex; align-items: center; gap: 16px; margin: 2px 0 2px !important; font: 700 20px/1.3 var(--title) !important;
+  color: var(--gold) !important; letter-spacing: 2px; text-shadow: 0 1px 0 #000, 0 0 10px rgba(255,190,60,0.2); }
+.page-title::before, .page-title::after { content: ''; flex: 1; height: 1px; }
+.page-title::before { background: linear-gradient(90deg, rgba(138,109,53,0) 0%, var(--frame) 100%); }
+.page-title::after { background: linear-gradient(90deg, var(--frame) 0%, rgba(138,109,53,0) 100%); }
+.page-title + .intro { text-align: center; margin-bottom: 14px; }
 
-.card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; margin-bottom: 14px; }
-.card h2 { margin: 0 0 4px; font-size: 17px; font-weight: 600; }
+/* A panel: a gold frame with a dark inner edge, as the game's windows have. */
+.card { position: relative; background: linear-gradient(180deg, #221A12 0%, var(--card) 40%, #18120C 100%);
+  border: 1px solid var(--frame); border-radius: 6px; padding: 16px 18px; margin-bottom: 14px;
+  box-shadow: inset 0 0 0 1px #000, inset 0 0 0 2px rgba(201,162,83,0.18), 0 3px 10px rgba(0,0,0,0.6); }
+.card h2 { margin: 0 0 6px; font-size: 17px; font-weight: 700; letter-spacing: 0.5px; text-shadow: 0 1px 0 #000; }
 .card p { margin: 4px 0 8px; }
-.card.warn { border-left: 4px solid var(--amber); }
+.card.warn { border-color: var(--amber); }
 .card.warn h2 { color: var(--amber); }
 .hint { color: var(--text2); font-size: 12.5px; }
 .problem { color: var(--red); }
 .ok { color: var(--green); }
 .grow { flex: 1; }
 .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 8px 0; }
-.label { margin: 12px 0 4px; font-size: 11.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); }
+.label { margin: 12px 0 4px; font: 600 12px var(--title); letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); }
 .path { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text2); font-size: 13px; }
 
-input { font: inherit; color: var(--text); background: var(--card2); border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; width: 100%; }
-input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
-select { font: inherit; color: var(--text); background: var(--card2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
-select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
-input[type="checkbox"], input[type="radio"] { width: 16px; height: 16px; flex: none; margin: 2px 0 0; accent-color: var(--accent); }
+input { font: inherit; color: var(--text); background: #0D0906; border: 1px solid var(--line); border-radius: 3px; padding: 7px 10px; width: 100%;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.8); }
+input:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
+select { font: inherit; color: var(--text); background: #0D0906; border: 1px solid var(--line); border-radius: 3px; padding: 6px 8px; }
+select:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
+/* Tick boxes in the game's colours: a dark well with a gold edge, gold when ticked. */
+input[type="checkbox"], input[type="radio"] { appearance: none; width: 16px; height: 16px; flex: none; margin: 2px 0 0; padding: 0;
+  border: 1px solid var(--frame); border-radius: 3px; background: #0D0906 center / 12px no-repeat; cursor: pointer;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.9); }
+input[type="radio"] { border-radius: 50%; }
+input[type="checkbox"]:hover, input[type="radio"]:hover { border-color: var(--gold); }
+input[type="checkbox"]:checked { border-color: var(--frame-hi); background-color: var(--accent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6.5l2.5 2.5L10 3' fill='none' stroke='%23140D06' stroke-width='2'/%3E%3C/svg%3E"); }
+input[type="radio"]:checked { border-color: var(--frame-hi); box-shadow: inset 0 0 0 3px #0D0906; background: var(--accent); }
+input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline: 1px solid var(--gold); outline-offset: 1px; }
+input[type="checkbox"]:disabled, input[type="radio"]:disabled { opacity: 0.4; cursor: default; }
 .field { display: flex; flex-direction: column; gap: 3px; margin: 8px 0; font-size: 12.5px; color: var(--text2); }
-button { font: inherit; color: var(--text); background: #3A3D46; border: 1px solid #4A4E59; border-radius: 6px; padding: 6px 14px; cursor: pointer; }
-button:hover { background: #454955; }
-button.primary { background: var(--accent); border-color: var(--accent); color: #0D2526; font-weight: 600; }
-button.primary:hover { background: var(--accent-hi); }
-button.danger { background: var(--red); border-color: var(--red); color: #fff; }
+
+/* Buttons: dark with a gold edge; the main one red and gold, as the game's own. */
+button { font: 700 13px var(--title); letter-spacing: 0.5px; color: var(--gold-soft); background: linear-gradient(180deg, #3A2C1C 0%, #241A10 100%);
+  border: 1px solid var(--frame); border-radius: 4px; padding: 6px 16px; cursor: pointer; text-shadow: 0 1px 0 #000;
+  box-shadow: inset 0 1px 0 rgba(255,220,140,0.15), 0 1px 2px rgba(0,0,0,0.6); }
+button:hover { color: var(--gold); border-color: var(--frame-hi); background: linear-gradient(180deg, #4A3822 0%, #2E2214 100%); }
+button.primary { color: var(--gold); border-color: var(--frame-hi); background: linear-gradient(180deg, #A8261A 0%, #7A140C 55%, #5A0C06 100%);
+  box-shadow: inset 0 1px 0 rgba(255,170,120,0.35), inset 0 0 0 1px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.7); }
+button.primary:hover { color: #FFF1A8; background: linear-gradient(180deg, #C4321F 0%, #921A0F 55%, #6A1008 100%); }
+button.danger { color: #fff; border-color: var(--red); background: linear-gradient(180deg, #B83A26 0%, #7E1E12 100%); }
 button:disabled { opacity: 0.4; cursor: default; }
 
-.banner { display: flex; gap: 10px; align-items: center; margin: 0 auto 10px; padding: 8px 20px; background: #2E3A2F;
-  border: 1px solid var(--green); border-radius: 8px; }
+.banner { display: flex; gap: 10px; align-items: center; margin: 0 auto 10px; padding: 8px 20px; color: var(--gold-soft);
+  background: linear-gradient(180deg, #2A2412 0%, #1C180C 100%); border: 1px solid var(--frame-hi); border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.6); }
 
 /* ---------- The setup steps ---------- */
 .progress { list-style: none; display: flex; gap: 6px; padding: 0; margin: 4px 0 14px; counter-reset: step; }
-.progress li { flex: 1; counter-increment: step; color: var(--text2); font-size: 13px; padding-top: 8px; border-top: 3px solid var(--line); }
+.progress li { flex: 1; counter-increment: step; color: var(--text2); font: 13.5px var(--title); padding-top: 8px; border-top: 3px solid var(--line); }
 .progress li::before { content: counter(step) '. '; }
-.progress li.current { color: var(--text); border-top-color: var(--accent); }
-.progress li.done { border-top-color: #2A6E71; }
+.progress li.current { color: var(--gold); border-top-color: var(--accent); }
+.progress li.done { color: var(--gold-soft); border-top-color: #7A5E2A; }
 .progress li.done::before { content: '✓ '; }
-.step h2 { font-size: 21px; margin-bottom: 6px; }
+.step h2 { font-size: 21px; font-weight: 700; margin-bottom: 6px; color: var(--gold); }
 .nav { display: flex; gap: 10px; align-items: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
 .more { margin: 10px 0 0; }
-.more summary { cursor: pointer; color: var(--text2); font-size: 13px; }
-.connected { padding: 10px 12px; border: 1px solid var(--green); border-radius: 6px; background: rgba(63,178,127,0.08); }
+.more summary { cursor: pointer; color: var(--accent); font: 13.5px var(--title); }
+.connected { padding: 10px 12px; border: 1px solid #3F7A2C; border-radius: 4px; background: rgba(95,203,74,0.08); }
 .connected p { margin: 0 0 8px; }
 .how { margin: 8px 0 10px; padding-left: 22px; }
 .how li { margin: 3px 0; }
+.how li::marker { color: var(--accent); font-family: var(--title); }
 
 /* ---------- Lists ---------- */
 .list { list-style: none; margin: 8px 0; padding: 0; }
 .list.bare, .list.inner { margin: 8px 0 0; }
 .item { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 12px; margin-bottom: 8px;
-  border: 1px solid var(--line); border-radius: 6px; background: var(--card2); }
+  border: 1px solid var(--line); border-radius: 4px; background: rgba(0,0,0,0.25); }
 .list.bare .item { margin: 0; border: none; background: none; padding: 0; }
-.list.inner .item { margin: 0 0 6px 24px; background: var(--card); }
-.item .name { font-size: 15px; font-weight: 600; }
+.list.inner .item { margin: 0 0 6px 24px; background: rgba(0,0,0,0.2); }
+.item .name { font: 600 16px var(--title); color: var(--gold-soft); }
 .item .sub { font-size: 12.5px; color: var(--text2); }
-.swatch { width: 6px; height: 32px; border-radius: 3px; flex: none; background: var(--line); }
+.swatch { width: 6px; height: 32px; border-radius: 3px; flex: none; background: var(--line); box-shadow: 0 0 0 1px #000; }
 .plugin { display: block; }
 .plugin-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
-.plugin-name { font-size: 16px; font-weight: 600; }
+.plugin-name { font: 600 18px var(--title); color: var(--gold); text-shadow: 0 1px 0 #000; }
 .channel { display: block; background: var(--card); }
 .channel .head { margin: 0; align-items: flex-start; }
 .channel.open { border-color: var(--accent); }
@@ -81,30 +125,31 @@ button:disabled { opacity: 0.4; cursor: default; }
 .tick { display: flex; gap: 9px; align-items: flex-start; cursor: pointer; }
 .tick-text { display: flex; flex-direction: column; }
 .tick-help { color: var(--text2); font-size: 12.5px; }
-.tag { margin-left: 8px; padding: 0 6px; border-radius: 9px; font-size: 11px; color: var(--accent-hi); border: 1px solid #2A6E71; }
+.tag { margin-left: 8px; padding: 0 6px; border-radius: 9px; font-size: 11px; color: var(--accent-hi); border: 1px solid #7A5E2A; }
 .role { margin: 6px 0 4px 25px; }
 .role input { max-width: 240px; }
 .role .field { margin: 2px 0; }
 
 /* A picture as Discord shows it. */
 .preview { margin: 12px 0 0; }
-.preview figcaption { font-size: 11.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); margin-bottom: 4px; }
-.preview img { display: block; width: 100%; border-radius: 4px; }
-.preview .wait { padding: 30px 0; text-align: center; background: var(--card2); border-radius: 4px; }
+.preview figcaption { font: 600 12px var(--title); letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+.preview img { display: block; width: 100%; border-radius: 3px; box-shadow: 0 0 0 1px #000, 0 3px 10px rgba(0,0,0,0.7); }
+.preview .wait { padding: 30px 0; text-align: center; background: var(--card2); border-radius: 3px; }
 
-/* ---------- Tabs ---------- */
-.tabs { display: flex; gap: 4px; margin: 2px 0 14px; border-bottom: 1px solid var(--line); }
-.tabs button { border: none; border-radius: 6px 6px 0 0; background: none; color: var(--text2); padding: 8px 14px; margin-bottom: -1px;
-  border-bottom: 2px solid transparent; }
-.tabs button:hover { background: rgba(255,255,255,0.04); }
-.tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); }
+/* ---------- Tabs: the game's tabs under a window ---------- */
+.tabs { display: flex; gap: 4px; margin: 2px 0 14px; border-bottom: 1px solid var(--frame); }
+.tabs button { border: 1px solid var(--line); border-bottom: none; border-radius: 6px 6px 0 0; color: var(--text2); padding: 7px 18px;
+  margin-bottom: -1px; background: linear-gradient(180deg, #241A10 0%, #150F09 100%); box-shadow: none; font-size: 14px; }
+.tabs button:hover { color: var(--gold-soft); background: linear-gradient(180deg, #33261A 0%, #1C150D 100%); }
+.tabs button[aria-selected="true"] { color: var(--gold); border-color: var(--frame); background: linear-gradient(180deg, #3A2C1C 0%, var(--card) 100%);
+  border-bottom: 1px solid var(--card); }
 .intro { color: var(--text2); margin: 0 0 10px; }
 
-.status { border-left: 6px solid var(--line); }
+.status { border-left: 5px solid var(--line); }
 .status.ok { border-left-color: var(--green); }
 .status.problem { border-left-color: var(--red); }
 .status.paused { border-left-color: var(--amber); }
-.big { font-size: 18px; font-weight: 600; margin: 0 0 4px !important; }
+.big { font: 700 19px var(--title); letter-spacing: 0.5px; margin: 0 0 4px !important; text-shadow: 0 1px 0 #000; }
 .big.ok { color: var(--green); }
 .big.paused { color: var(--amber); }
 
@@ -114,54 +159,63 @@ button:disabled { opacity: 0.4; cursor: default; }
 .log li.bad { color: var(--red); }
 .item p { margin: 4px 0 0; }
 
-/* ---------- Flows (SPEC §5.1): what the addons post on the left, Discord on the right, lines between ---------- */
-:root { --kind: #2FA4A9; --chan: #E0895A; --thread: #C9A25A; }
+/* ---------- Flows (SPEC §5.1): what the addons post on the left, Discord on the right, lines between ----------
+   Item-quality colours: what addons post is rare blue, channels epic purple, threads legendary orange. */
+:root { --kind: #3D8FE0; --chan: #A86BEB; --thread: #FF9F1C; }
 body.wide main, body.wide .top, body.wide .banner { max-width: 1060px; }
 .toolbar { margin: 0 0 8px; }
 .flowgrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
 @media (min-width: 900px) { body.wide .flowgrid { grid-template-columns: minmax(0, 1fr) 320px; align-items: start; } }
-.canvas-wrap { border: 1px solid var(--line); border-radius: 8px; background: var(--card2); }
+.canvas-wrap { border: 1px solid var(--frame); border-radius: 6px; background: radial-gradient(ellipse at 50% 30%, #1E1710 0%, #100B07 100%);
+  box-shadow: inset 0 0 0 1px #000, inset 0 0 30px rgba(0,0,0,0.7), 0 3px 10px rgba(0,0,0,0.6); }
 .canvas { position: relative; touch-action: none; user-select: none; }
 .wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
-.wire { fill: none; stroke: #7C808C; stroke-width: 1.6; }
-.wire.lit, .wire.hover { stroke: #C9CCD4; stroke-width: 2.2; }
-.wire.selected { stroke: var(--accent-hi); stroke-width: 2.6; }
-.wire.temp { stroke: var(--accent-hi); stroke-dasharray: 5 4; }
+.wire { fill: none; stroke: #8A7550; stroke-width: 1.6; }
+.wire.lit, .wire.hover { stroke: #E8D29A; stroke-width: 2.2; }
+.wire.selected { stroke: var(--gold); stroke-width: 2.6; filter: drop-shadow(0 0 3px rgba(255,209,0,0.6)); }
+.wire.temp { stroke: var(--gold); stroke-dasharray: 5 4; }
 .wire-hit { fill: none; stroke: transparent; stroke-width: 12; pointer-events: stroke; cursor: pointer; }
-.col-head { position: absolute; font-size: 12.5px; font-weight: 600; color: var(--text); }
-.tree-plugin { position: absolute; left: 4px; font-size: 11.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); }
-.tree-group { position: absolute; height: 24px; padding: 0 6px; text-align: left; font-size: 13px; background: none; border: none;
-  color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tree-group:hover { background: rgba(255,255,255,0.05); }
+.col-head { position: absolute; font: 600 14px var(--title); color: var(--gold); }
+.tree-plugin { position: absolute; left: 4px; font: 600 12px var(--title); letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); }
+.tree-group { position: absolute; height: 24px; padding: 0 6px; text-align: left; font: 13.5px var(--title); background: none; border: none;
+  color: var(--gold-soft); box-shadow: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tree-group:hover { background: rgba(255,209,0,0.06); }
 .fempty { position: absolute; margin: 0; }
 .fbox { position: absolute; min-height: 44px; display: flex; flex-direction: column; justify-content: center; padding: 5px 14px 6px 10px;
-  border: 1px solid #4A4E59; border-radius: 6px; background: var(--card); cursor: pointer; border-left: 4px solid var(--line); }
+  border: 1px solid #5A472A; border-radius: 4px; background: linear-gradient(180deg, #2A2016 0%, #1A140D 100%); cursor: pointer;
+  border-left: 4px solid var(--line); box-shadow: 0 2px 5px rgba(0,0,0,0.6); }
 .fbox.kind { border-left-color: var(--kind); }
 .fbox.channel { border-left-color: var(--chan); }
 .fbox.thread { border-left-color: var(--thread); min-height: 40px; }
-.fbox:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 1px; }
-.fbox.selected { border-top-color: var(--accent-hi); border-right-color: var(--accent-hi); border-bottom-color: var(--accent-hi); }
-.fbox.target { border-color: var(--accent-hi); background: #2E3A3B; }
-.fbox-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fbox:hover { border-top-color: var(--frame); border-right-color: var(--frame); border-bottom-color: var(--frame); }
+.fbox:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.fbox.selected { border-top-color: var(--gold); border-right-color: var(--gold); border-bottom-color: var(--gold);
+  box-shadow: 0 0 8px rgba(255,209,0,0.35), 0 2px 5px rgba(0,0,0,0.6); }
+.fbox.target { border-color: var(--gold); background: #33280F; }
+.fbox-title { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fbox.kind .fbox-title { color: #8CC4FF; }
+.fbox.channel .fbox-title { color: #CDA6FF; }
+.fbox.thread .fbox-title { color: #FFC46B; }
 .fbox-sub { font-size: 11.5px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.fbox-msg { position: absolute; right: -4px; top: calc(100% + 4px); z-index: 3; width: 220px; padding: 6px 8px; border-radius: 6px;
-  background: #3A2526; border: 1px solid var(--red); color: #F3C1BD; font-size: 12px; font-weight: 400; white-space: normal; }
-.port { position: absolute; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: var(--card2);
-  border: 2px solid #8A8E99; }
+.fbox-msg { position: absolute; right: -4px; top: calc(100% + 4px); z-index: 3; width: 220px; padding: 6px 8px; border-radius: 4px;
+  background: #3A1712; border: 1px solid var(--red); color: #F7C3B8; font-size: 12px; font-weight: 400; white-space: normal; }
+.port { position: absolute; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: #0D0906;
+  border: 2px solid #8A7550; }
 .port.in { left: -7px; }
 .port.out { right: -7px; cursor: crosshair; border-color: var(--accent); }
-.port.out:hover { background: var(--accent); }
+.port.out:hover { background: var(--gold); }
 /* A line's rules, as a tag on it. */
 .ftag { position: absolute; z-index: 2; height: 20px; padding: 0 8px; font-size: 11.5px; line-height: 18px; border-radius: 10px;
-  background: #30333B; border: 1px solid #5A5E69; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ftag:hover { background: #3A3D46; border-color: var(--accent-hi); }
-.ftag.selected { border-color: var(--accent-hi); color: var(--accent-hi); }
-.danger-text { color: #F09595 !important; }
+  background: #241A10; border: 1px solid var(--frame); color: var(--gold-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.7); }
+.ftag:hover { background: #33261A; border-color: var(--gold); }
+.ftag.selected { border-color: var(--gold); color: var(--gold); }
+.danger-text { color: #F59A88 !important; }
 .panel { margin: 0; }
-.panel h3 { margin: 0 0 6px; font-size: 15px; }
+.panel h3 { margin: 0 0 6px; font-size: 17px; }
 .panel .time { width: 110px; }
 .panel .rule { padding: 6px 0 2px; border-top: 1px solid var(--line); margin-top: 8px; }
-.panel .rule > .tick .tick-label, .rule-head { font-weight: 600; }
+.panel .rule > .tick .tick-label, .rule-head { font-weight: 600; color: var(--gold-soft); }
 .rule-head { margin: 6px 0 4px; }
 .indent { margin-left: 25px; }
 p.indent { margin-top: 0; }
@@ -169,9 +223,9 @@ p.indent { margin-top: 0; }
 .lines { list-style: none; margin: 4px 0; padding: 0; font-size: 13px; }
 .lines li { display: flex; gap: 8px; align-items: center; padding: 3px 0; border-bottom: 1px solid var(--line); }
 .line-rules { display: block; font-size: 11.5px; color: var(--text2); }
-button.small { padding: 2px 8px; font-size: 12px; }
+button.small { padding: 2px 9px; font-size: 12.5px; }
 .sendto { gap: 6px; }
-.sendto button { padding: 3px 10px; font-size: 12.5px; }
+.sendto button { padding: 3px 10px; font-size: 13px; }
 .flowrows ul { list-style: none; margin: 4px 0 0; padding: 0; font-size: 13.5px; }
 .flowrows li { padding: 5px 0; border-bottom: 1px solid var(--line); }
 .flowrows li.warn { color: var(--text2); }
@@ -184,12 +238,17 @@ button.small { padding: 2px 8px; font-size: 12px; }
 .panel .onlyrow { flex-wrap: nowrap; }
 .panel .onlyrow select { flex: none; max-width: 120px; }
 .panel .onlyrow input { flex: 1; min-width: 0; }
-/* What Discord shows: a message as Discord draws it. */
+/* What Discord shows: a message as Discord draws it (Discord's colours, not the game's). */
 .sample { margin-top: 10px; padding-top: 2px; border-top: 1px solid var(--line); }
-.dmsg { display: flex; gap: 10px; padding: 8px 10px; border-radius: 6px; background: #313338; }
-.dmsg-av { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); flex: none; }
+.dmsg { display: flex; gap: 10px; padding: 8px 10px; border-radius: 6px; background: #313338; color: #DBDEE1; }
+.dmsg-av { width: 32px; height: 32px; border-radius: 50%; background: #5865F2; flex: none; }
 .dmsg-body { min-width: 0; }
 .dmsg-who { font-weight: 600; font-size: 13px; }
 .dmsg-text { font-size: 13px; white-space: pre-wrap; word-break: break-word; }
 .dmsg-mention { color: #C9CDFB; background: rgba(88,101,242,0.3); border-radius: 3px; padding: 0 2px; }
 .pin-ask { display: flex; gap: 10px; align-items: center; margin-top: 4px; color: var(--amber); }
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #0D0906; }
+::-webkit-scrollbar-thumb { background: #4A3A22; border: 2px solid #0D0906; border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--frame); }

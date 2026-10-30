@@ -54,7 +54,7 @@ costs more than looking at the files and posting does not need it.
   and shows in the window, before anything is installed:
   > **This plugin contains code.** Only install it if you trust whoever made it. The app runs it locked away: it can
   > read the saved data of the addon it is for, and nothing else on this computer. It cannot see your Discord
-  > webhook URLs or reach the internet. Plugin: "{name}" by {author}, for {addon}.
+  > webhook links or reach the internet. Plugin: "{name}" by {author}, for {addon}.
   > **Install** / **Cancel**
 
   with, when it applies, "It replaces version {old} of this plugin, which is installed, with version {new}." and "It
@@ -84,8 +84,9 @@ mapped text channel"; step boxes in between read as a second process. A new play
 find the addon, paste one webhook, press Post.
 
 ### 5.1 Flows
-The player decides what goes where by drawing lines on the **Flows** page (§8), from what an addon posts to where
-it goes. One line is one flow. A line may carry rules, and a channel has its own times (§5.2).
+The player decides what goes where by drawing lines on the **Channels** page (§8), from what an addon posts to where
+it goes. (This spec calls it Flows; the window says Channels, decided 30 Oct 2026: players know channels, not
+flows.) One line is one flow. A line may carry rules, and a channel has its own times (§5.2).
 - **Left: what your addons post**, as a tree. Each plugin in use, then its groups, then each group's kinds, with the
   plugin's names and help lines. The first group in the tree is **Every {group}** ("Every fellowship"). Lines from
   it count for every group, including groups saved later. A plugin with a `weekly` block has one more kind,
@@ -105,7 +106,7 @@ it goes. One line is one flow. A line may carry rules, and a channel has its own
   reaches {channel}." and does nothing. A line with Only when brings only some items, so it never stands in for
   another: "Every fellowship → #events, only when Who includes Lea" and "Iron Oath → #events" both count, and a clear
   both bring is posted once, the way drawn first.
-- **The flows in words**, under the canvas, one per line: "Chapter complete · Every fellowship → #events: only
+- **In plain words**, under the canvas, one per line: "Chapter complete · Every fellowship → #events: only
   when Chapter is at least 5, mentioning @Fellowship". Kinds with no line are listed as "Not posted: Pictures from
   runs."
 - **Removing.** A line from its settings. A thread or a channel asks twice first, because its lines, settings and
@@ -124,7 +125,7 @@ would be posted there, rules applied (or "Nothing saved for {kind} yet." until t
 
 | On a line | What it does | Offered for |
 |---|---|---|
-| **Only when…** | Lets an item through only when one of its fields matches, for example "Chapter is at least 5", "Dungeon is The Deadmines" or "Who includes Lea, Pata" (values separated by commas: any of them; "does not include" none of them). Only fields the plugin names (`fields`, `docs/PLUGINS.md` §2), with the tests that fit (a number: is, is not, is at least, is at most; a text: is, is not; names: includes, does not include) and, for text and names, the values seen so far. Text matches whatever the case. An item without the field does not get through, nor does anything before a field and value are set. Changed, it starts from then: what it held back before is not posted now (no backlog). The settings say what it does to what is saved now: "3 of the last 12 would be posted here." | News kinds whose plugin names fields. |
+| **Only when…** | "Posts an item only when it matches, for example Chapter is at least 5.": one of its fields, for example "Chapter is at least 5", "Dungeon is The Deadmines" or "Who includes Lea, Pata" (values separated by commas: any of them; "does not include" none of them). Only fields the plugin names (`fields`, `docs/PLUGINS.md` §2), with the tests that fit (a number: is, is not, is at least, is at most; a text: is, is not; names: includes, does not include) and, for text and names, the values seen so far. Text matches whatever the case. An item without the field does not get through, nor does anything before a field and value are set. Changed, it starts from then: what it held back before is not posted now (no backlog). The settings say what it does to what is saved now: "3 of the last 12 would be posted here." | News kinds whose plugin names fields. |
 | **Mention a role** | Mentions one Discord role in each post: its ID, and a name for it that only the app shows ("@Fellowship"). Only that role is pinged, never @everyone or a person (`allowed_mentions`). | News kinds whose plugin allows it (`mention`). Not kept kinds, since an edit pings nobody. |
 | **Gather into the daily post** | Instead of a post per item, the item goes into its place's daily post, at the channel's time: one post per group, with the group's name, then one line per item, oldest first. It is at most 1900 characters (more goes into a second post) and carries up to 10 of the items' screenshots and pictures. Every line that gathers into one place goes into the same post. If nothing was gathered, nothing is posted. | News kinds. Not kept kinds and not the weekly summary. |
 
@@ -232,36 +233,38 @@ group was saved in, and turns it into a PNG.
    is ticked for all at first.
    - **Where the app looks** (folded; it opens by itself when nothing is found): the WoW folder, and the game
      versions and accounts.
-   - Nothing found: "No addon with a Discord plugin found yet. Addons save their data when you log out, type /reload
+   - Nothing found: "No addon that can post to Discord found yet. Addons save their data when you log out, type /reload
      or close the game. Do that once, then press Look again."
    - An addon whose outbox is saved but has no groups shows its plugin's `empty` sentence, or "{addon} has nothing
      to post yet. When it has, type /reload in the game and press Look again." Next waits until a group is there.
 2. **Connect a Discord channel.** As in the Companion:
    - what a webhook is, and three numbered lines on getting one (channel settings → Integrations → Webhooks → New
      Webhook → Copy Webhook URL);
-   - the URL, and a name for the channel (only shown in the app);
+   - the webhook link, and a name for the channel (only shown in the app);
    - **Connect**, which sends a test message: "WoW Addon Webhooks for Discord is connected. Posts from your addons will
      appear here.";
-   - "A webhook URL works like a password: anyone who has it can post in that channel. It stays on this computer,
-     stored encrypted."
+   - "Keep this link to yourself: anyone who has it can post in that channel. The app keeps it on this computer,
+     encrypted."
 3. **Choose what goes where.** The Flows canvas (§5.1) with the channel just connected.
    - To start, each kind its plugin suggests (`default`) has a line from **Every {group}** to that channel, so most
-     players only press **Post**. "You can change it later under Flows."
-   - **Add a channel** connects another without leaving the step; lines and their rules work as on the Flows page.
+     players only press **Post**. "You can change it later under Channels."
+   - **Add a channel** connects another without leaving the step; lines and their rules work as on the Channels page.
    - Kept kinds with a picture show **What Discord shows**.
    - **Post** posts the kept messages and opens Home: "Posted. Pin the board in Discord so everyone finds it."
 
-**After setup: four tabs.**
+**After setup: four tabs.** Each opens with its name as a heading between two gold rules and one line on what it
+is for (Home: "What the app has posted to Discord, and what your addons saved."; Settings: "Where the app looks for
+your game, and how it runs."; Channels and Addons: their hints below).
 - **Home**:
   - one status sentence: "Discord is up to date.", "Posting is paused.", or the problem, naming the addon and
     channel;
   - the last post, and "The game is running. …" while it runs;
   - **Update Discord now**, and **Pause posting** / **Resume posting**;
   - each addon in use, with its groups and what Discord shows.
-- **Flows** (§5.1):
-  - on top, **Add a channel** and one hint: "Drag from a dot to a channel. Click a line to add rules to it, or a
-    channel for its times and threads.";
-  - the canvas in two columns, with the flows in words under it.
+- **Channels** (the Flows page, §5.1):
+  - on top, **Add a channel** and one hint: "Drag from a dot to a channel to send it there. Click a line for its
+    rules, or a channel for its quiet hours and threads.";
+  - the canvas in two columns, with **In plain words** under it.
 
   Clicking a box or a line opens its settings beside the canvas (under it in a window narrower than 900 pixels):
   - a kind: its help line, **What Discord shows** for a kept kind with a picture, its lines (each with **Rules** and
@@ -272,7 +275,7 @@ group was saved in, and turns it into a PNG.
     its lines, and **Remove channel** (pressed twice);
   - a thread: its name, its lines, and **Remove thread** (pressed twice).
 - **Addons**:
-  - every plugin found or installed: name, version, author, data or "Contains code", **Use** on/off, the other
+  - every plugin found or installed: name, version, author, "Comes with the addon" or "Contains code", **Use** on/off, the other
     plugins for the same addon, and problems (a code plugin's script: why it was stopped);
   - **Look again** (failed scripts run again), **Install a code plugin…** (the warning shows under it), and **Remove**
     (code plugins only, pressed twice).
@@ -283,8 +286,23 @@ group was saved in, and turns it into a PNG.
   - **Recent posts**: the last 50 posts and failures (when, addon, channel, group, what, and the line's rules);
   - at the bottom, "Not made by or affiliated with Blizzard Entertainment or Discord. …" (§1).
 
-**The tray**: **Open**, **Update Discord now**, **Pause posting** / **Resume posting**, **Quit** (and **Restart to
-update**). Closing the window keeps the app in the tray.
+**The tray**: **Open**, **Update Discord now**, **Pause posting** / **Resume posting**, **Quit** (and **Download and
+update to {version}** when one is out, §10). Closing the window keeps the app in the tray.
+
+**A new version** (§10) shows at the top of every page: "Version {version} is out. You have {current}." with
+**Download and update**; while it downloads, "Downloading version {version}… {percent}%. The app starts again when
+it is done."; if that fails, "Version {version} could not be downloaded. Check the connection and try again." with
+**Try again**.
+
+The window looks like the game's own windows (decided 30 Oct 2026: the players are WoW players, and the plain dark
+look read as technical): a title bar with the crest, dark leather, gold-framed panels, titles, tabs and buttons in
+Cinzel (carved capitals, bundled in `assets/fonts` under the SIL Open Font License; body text in Segoe UI), red-and-gold
+main buttons, gold tick boxes; on the Channels board, what addons post is rare blue, channels epic purple and threads
+legendary orange. CSS only, no Blizzard art; "What Discord shows" keeps Discord's colours.
+
+The app, its tray, its notices and its installer have one icon: the Journey Together Forever crest (a bronze rune
+ring around a blue disc) with three webhook nodes in it, drawn by `tools/make-icon.js` at each size Windows uses
+(the studs and runes go at small sizes).
 
 All window texts live in `src/locales/enUS.json`. Plugin texts (kind names, help lines, weekly words, field names)
 come from the plugin. Post texts come from the addon or the code plugin, as they are.
@@ -307,13 +325,23 @@ More info → Run anyway). Addons that bring a plugin say on their CurseForge pa
   release workflow (`.github/workflows/release.yml`, on `windows-latest`: tests, a draft release for the tag,
   `electron-builder --win --publish always` into it, then the release published). Its Releases hold the installer,
   its blockmap and `latest.yml`.
-- The installed app looks for a newer version at start and once a day, downloads it in the background, and offers
-  **Restart to update** in the window and the tray; quitting installs it too. Not while developing.
+- The installed app looks for a newer version at start and once a day, and never downloads one without asking
+  (decided 30 Oct 2026: a player should choose when the app closes to update). When one is out:
+  - with the window open, a box asks "Version {version} of WoW Addon Webhooks for Discord is out." / "You have
+    version {current}. Download and install it now? The app closes for a moment and starts again; your settings
+    stay." with **Download and update** and **Later**;
+  - in the tray, a Windows notice "Version {version} is out. Click to download and update." opens the window and
+    asks;
+  - the box is asked once per version per run; after **Later** the window's line (§8) and the tray item stay.
+
+  **Download and update** downloads it with the progress in the window, then installs and starts again; a failed
+  download says so with **Try again**. Not while developing.
 - The installer puts the app in `%LOCALAPPDATA%\Programs\wow-addon-webhooks-for-discord`, with a Start menu and
   a desktop shortcut. Uninstalling (Windows Settings → Apps) leaves the settings in
   `%APPDATA%\WoW Addon Webhooks for Discord`.
 - The README is for players (install, setup, what the app reads, code plugins, uninstall) and for addon developers
-  (the plugin contract and the check mode). (Built in W8, 30 Oct 2026.)
+  (the plugin contract and the check mode). (Built in W8, 30 Oct 2026.) `docs/MANUAL.md` is the players' manual, with
+  pictures of each page from a made-up fellowship (`docs/manual/`), never a real webhook or player.
 
 ## 11. Open questions
 - Code plugins: a list of plugins someone has reviewed, shown in the app? (Not now: install by hand only.)

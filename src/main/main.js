@@ -23,7 +23,9 @@ const { runScript } = require('./run-script');
 const { startUpdates } = require('./updater');
 
 const TEXTS = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'locales', 'enUS.json'), 'utf8'));
-const ICON = path.join(__dirname, '..', '..', 'assets', 'icon.png');
+// The icon (tools/make-icon.js): on Windows the .ico, drawn anew for each size, so the tray's 16 pixels stay sharp.
+const ICON_PNG = path.join(__dirname, '..', '..', 'assets', 'icon.png');
+const ICON = process.platform === 'win32' ? path.join(__dirname, '..', '..', 'assets', 'icon.ico') : ICON_PNG;
 const GAME_CHECK = 15000;      // how often the app looks whether a watched game is running, while its window is open
 const PLUGIN_CHECK = 60000;    // how often it looks for new or changed plugins
 const STEP_CHECK = 60000;      // how often it looks whether a step (Digest, Quiet hours) or the weekly summary is due
@@ -34,10 +36,12 @@ const SHOT_QUALITY = 85;
 // - AWD_DISCORD=http://127.0.0.1:<port> sends every webhook call to a fake Discord on this computer (only a local
 //   address is taken);
 // - AWD_CLOCK_OFFSET=<seconds> moves the app's clock, to try Digest, Quiet hours and the weekly summary;
-// - AWD_PICK_ZIP=<file> is what Install a code plugin… picks (the warning is still shown).
+// - AWD_PICK_ZIP=<file> is what Install a code plugin… picks (the warning is still shown);
+// - AWD_UPDATE_FEED=http://127.0.0.1:<port> looks for updates in a fake feed on this computer (a latest.yml there).
 const DEV = !app.isPackaged ? process.env : {};
 const FAKE_DISCORD = /^http:\/\/(127\.0\.0\.1|localhost):\d+$/.test(DEV.AWD_DISCORD || '') ? DEV.AWD_DISCORD : null;
 const CLOCK_OFFSET = Number(DEV.AWD_CLOCK_OFFSET) || 0;
+const UPDATE_FEED = /^http:\/\/(127\.0\.0\.1|localhost):\d+\/?$/.test(DEV.AWD_UPDATE_FEED || '') ? DEV.AWD_UPDATE_FEED : null;
 const now = () => Math.floor(Date.now() / 1000) + CLOCK_OFFSET;
 
 // The developer's check (src/main/check.js): a report instead of the app, beside a running one. (A CommonJS module
@@ -51,7 +55,9 @@ app.setAppUserModelId('WoW Addon Webhooks for Discord');
 registerScheme();
 
 let settings, poster, tray, win, lastStatus = null, debounce = null, gameRunning = false, noticed = null, gameArt = null;
-let updates = null, updateReady = null, scripts = null;
+let updates = null, scripts = null;
+let update = null; // a newer version: { version, state: 'found' | 'downloading' | 'failed', percent }
+let askedUpdate = null; // the version the player was asked about in a box, once per run
 let pluginsDir = null, stateDir = null; // code plugins the player installed, and what their scripts kept
 let pendingInstall = null; // a code plugin's .zip read and checked, waiting for Install
 const watched = new Set();
@@ -222,14 +228,14 @@ function kindOfBox(box, inUse) {
 
 function sendStatus() {
   if (tray) tray.setToolTip(TEXTS.trayTip + (lastStatus && lastStatus.problem ? ' · ' + TEXTS['problem.' + lastStatus.problem] : ''));
-  if (win && !win.isDestroyed()) win.webContents.send('status', { ...(lastStatus || {}), gameRunning, updateReady });
+  if (win && !win.isDestroyed()) win.webContents.send('status', { ...(lastStatus || {}), gameRunning, update });
 }
 
 function showStatus(st) {
   lastStatus = { ...st, at: now() };
   if (st.problem && st.problem !== noticed && settings.get('notices') && Notification.isSupported()) {
     const where = [st.plugin, st.channel, st.group].filter(Boolean).join(' · ');
-    const n = new Notification({ title: TEXTS.appName, body: (where ? where + ': ' : '') + (TEXTS['problem.' + st.problem] || '') });
+    const n = new Notification({ title: TEXTS.appName, icon: ICON_PNG, body: (where ? where + ': ' : '') + (TEXTS['problem.' + st.problem] || '') });
     n.on('click', openWindow);
     n.show();
   }
@@ -244,7 +250,7 @@ function openWindow() {
   // is locked.
   const snapshot = process.env.AWD_SNAPSHOT && !app.isPackaged;
   win = new BrowserWindow({
-    width: 800, height: 920, minWidth: 620, minHeight: 600, title: TEXTS.appName, backgroundColor: '#1E1F24',
+    width: 800, height: 920, minWidth: 620, minHeight: 600, title: TEXTS.appName, backgroundColor: '#120D09',
     icon: fs.existsSync(ICON) ? ICON : undefined, autoHideMenuBar: true,
     show: !snapshot,
     webPreferences: { preload: path.join(__dirname, 'preload.js'), sandbox: true, contextIsolation: true, nodeIntegration: false, offscreen: !!snapshot },
@@ -271,13 +277,62 @@ function openWindow() {
 function trayMenu() {
   const paused = settings.get('paused');
   tray.setContextMenu(Menu.buildFromTemplate([
-    ...(updateReady ? [{ label: TEXTS.restartUpdate, click: () => { app.isQuitting = true; updates.install(); } }, { type: 'separator' }] : []),
+    ...(update && update.state !== 'downloading' ? [{ label: fill(TEXTS['update.tray'], { version: update.version }), click: downloadUpdate }, { type: 'separator' }] : []),
     { label: TEXTS.trayOpen, click: openWindow },
     { label: TEXTS.postNow, click: () => sync('now') },
     { label: paused ? TEXTS.resume : TEXTS.pause, click: () => { poster.setPaused(!paused); trayMenu(); sendStatus(); } },
     { type: 'separator' },
     { label: TEXTS.trayQuit, click: () => { app.isQuitting = true; app.quit(); } },
   ]));
+}
+
+// ---------- Updates (SPEC §10): asked first, downloaded only on the player's word ----------
+
+const fill = (t, v) => String(t || '').replace(/\{(\w+)\}/g, (_, k) => (v[k] != null ? v[k] : ''));
+
+function updateFound(version) {
+  if (!version || (update && update.version === version && update.state !== 'failed')) return;
+  update = { version, state: 'found', percent: 0 };
+  trayMenu(); sendStatus();
+  if (win && !win.isDestroyed() && win.isVisible()) askUpdate();
+  else if (Notification.isSupported()) {
+    // In the tray: a Windows notice; clicking it opens the window and asks there.
+    const n = new Notification({ title: TEXTS.appName, icon: ICON_PNG, body: fill(TEXTS['update.notice'], { version }) });
+    n.on('click', () => { openWindow(); askUpdate(); });
+    n.show();
+  }
+}
+
+// The box: "Version x is out. Download and update?" Once per version and run; the window's banner stays after Later.
+async function askUpdate() {
+  if (!update || update.state !== 'found' || askedUpdate === update.version || !win || win.isDestroyed()) return;
+  askedUpdate = update.version;
+  const { response } = await dialog.showMessageBox(win, {
+    type: 'info', title: TEXTS.appName, noLink: true, defaultId: 0, cancelId: 1,
+    message: fill(TEXTS['update.askMessage'], { version: update.version }),
+    detail: fill(TEXTS['update.askDetail'], { current: app.getVersion() }),
+    buttons: [TEXTS['update.download'], TEXTS['update.later']],
+  });
+  if (response === 0) downloadUpdate();
+}
+
+function downloadUpdate() {
+  if (!updates || !update || update.state === 'downloading') return;
+  update = { ...update, state: 'downloading', percent: 0 };
+  trayMenu(); sendStatus();
+  updates.download(); // installs and starts the app again when it has it
+}
+
+function updateProgress(percent) {
+  if (!update || update.state !== 'downloading' || percent < update.percent + 5) return;
+  update = { ...update, percent };
+  sendStatus();
+}
+
+function updateFailed() {
+  if (!update) return;
+  update = { ...update, state: 'failed' };
+  trayMenu(); sendStatus();
 }
 
 function setStartWithWindows(on) {
@@ -418,7 +473,7 @@ function ipc() {
     // While setting up, a plugin found for the first time is used unless the player unticks it.
     if (!settings.get('setupDone')) for (const f of list) if (f.plugin && settings.used(f.id) === undefined) settings.usePlugin(f.id, true);
     const g = games(list);
-    return { settings: settings.all(), status: lastStatus, gameRunning, updateReady, wowFolder: settings.get('wowFolder'),
+    return { settings: settings.all(), status: lastStatus, gameRunning, update, version: app.getVersion(), wowFolder: settings.get('wowFolder'),
       games: g, plugins: pluginsView(list), flows: flowsView(list) };
   });
   ipcMain.handle('pickFolder', async () => {
@@ -573,7 +628,7 @@ function ipc() {
     else return { ok: false };
     return { ok: true };
   });
-  ipcMain.handle('restartUpdate', () => { if (updates && updateReady) { app.isQuitting = true; updates.install(); } return { ok: !!updateReady }; });
+  ipcMain.handle('downloadUpdate', () => { const ok = !!(update && update.state !== 'downloading'); downloadUpdate(); return { ok }; });
 }
 
 app.on('second-instance', openWindow);
@@ -592,11 +647,10 @@ app.whenReady().then(() => {
     render: (p, kind, entry, group, flavor) => (p.templates[kind] ? renderCard(p, kind, entry, group, now(), gamePng(flavor)) : null),
     picture, screenshot });
   ipc();
-  const icon = fs.existsSync(ICON) ? nativeImage.createFromPath(ICON).resize({ width: 16, height: 16 }) : nativeImage.createEmpty();
-  tray = new Tray(icon);
+  tray = new Tray(fs.existsSync(ICON) ? ICON : nativeImage.createEmpty());
   tray.setToolTip(TEXTS.trayTip);
   tray.on('click', openWindow);
-  updates = startUpdates({ onReady: (version) => { updateReady = version || true; trayMenu(); sendStatus(); } });
+  updates = startUpdates({ onFound: updateFound, onProgress: updateProgress, onFailed: updateFailed, feed: UPDATE_FEED });
   trayMenu();
   checkPlugins();
   setInterval(watchGame, GAME_CHECK);

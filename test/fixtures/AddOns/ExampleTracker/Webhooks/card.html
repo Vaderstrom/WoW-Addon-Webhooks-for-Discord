@@ -1,0 +1,33 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  body { margin: 0; background: transparent; font-family: 'Segoe UI', Arial, sans-serif; }
+  #card { width: 600px; padding: 20px 24px; background: #20242C; color: #EEE; border-radius: 10px; border: 2px solid #2FA4A9; }
+  h1 { margin: 0 0 10px; font-size: 24px; display: flex; align-items: center; gap: 10px; }
+  h1 img { width: 32px; height: 32px; }
+  li { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #333; }
+  ul { list-style: none; margin: 0; padding: 0; }
+</style></head>
+<body><div id="card"></div>
+<script>
+  // An example template (docs/PLUGINS.md §6): draws the team's standings from the outbox's data.
+  window.webhookCard = {
+    async render(data, ctx) {
+      const card = document.getElementById('card');
+      const h = document.createElement('h1');
+      const icon = ctx.asset('Media/Icon.tga');
+      if (icon) { const img = new Image(); img.src = icon; h.append(img); await img.decode().catch(() => {}); }
+      h.append(ctx.group.name);
+      const ul = document.createElement('ul');
+      for (const row of data.rows || []) {
+        const li = document.createElement('li');
+        const a = document.createElement('span'); a.textContent = row.name;
+        const b = document.createElement('span'); b.textContent = row.score;
+        li.append(a, b); ul.append(li);
+      }
+      card.replaceChildren(h, ul);
+      return card;
+    },
+  };
+</script>
+</body></html>

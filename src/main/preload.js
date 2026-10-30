@@ -1,0 +1,35 @@
+'use strict';
+// The window's only way to the app: a fixed list of calls, no Node in the page.
+const { contextBridge, ipcRenderer } = require('electron');
+
+contextBridge.exposeInMainWorld('awd', {
+  texts: () => ipcRenderer.invoke('texts'),
+  state: () => ipcRenderer.invoke('state'),
+  pickFolder: () => ipcRenderer.invoke('pickFolder'),
+  setGame: (flavor, account, on) => ipcRenderer.invoke('setGame', flavor, account, on),
+  usePlugin: (id, on) => ipcRenderer.invoke('usePlugin', id, on),
+  lookCode: () => ipcRenderer.invoke('lookCode'),
+  installCode: () => ipcRenderer.invoke('installCode'),
+  cancelInstall: () => ipcRenderer.invoke('cancelInstall'),
+  removeCode: (folder) => ipcRenderer.invoke('removeCode', folder),
+  preview: (pid, gid, kind) => ipcRenderer.invoke('preview', pid, gid, kind),
+  connect: (name, url) => ipcRenderer.invoke('connect', name, url),
+  renameChannel: (id, name) => ipcRenderer.invoke('renameChannel', id, name),
+  addLine: (from, to) => ipcRenderer.invoke('addLine', from, to),
+  removeLine: (from, to) => ipcRenderer.invoke('removeLine', from, to),
+  setLine: (from, to, rules) => ipcRenderer.invoke('setLine', from, to, rules),
+  setChannel: (id, values) => ipcRenderer.invoke('setChannel', id, values),
+  addThread: (id, link, name) => ipcRenderer.invoke('addThread', id, link, name),
+  renameThread: (id, tid, name) => ipcRenderer.invoke('renameThread', id, tid, name),
+  removeThread: (id, tid) => ipcRenderer.invoke('removeThread', id, tid),
+  removeChannel: (id) => ipcRenderer.invoke('removeChannel', id),
+  testChannel: (id) => ipcRenderer.invoke('testChannel', id),
+  finishSetup: () => ipcRenderer.invoke('finishSetup'),
+  postNow: () => ipcRenderer.invoke('postNow'),
+  clearPinAsks: () => ipcRenderer.invoke('clearPinAsks'),
+  reload: () => ipcRenderer.invoke('reload'),
+  setPaused: (paused) => ipcRenderer.invoke('setPaused', paused),
+  setOption: (key, on) => ipcRenderer.invoke('setOption', key, on),
+  restartUpdate: () => ipcRenderer.invoke('restartUpdate'),
+  onStatus: (fn) => ipcRenderer.on('status', (_e, st) => fn(st)),
+});

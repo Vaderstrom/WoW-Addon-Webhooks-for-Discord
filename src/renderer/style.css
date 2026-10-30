@@ -1,0 +1,195 @@
+/* A plain dark look of its own: the app belongs to no one addon (Journey Together's parchment stays in its plugin). */
+:root {
+  --bg: #1E1F24; --card: #2A2C33; --card2: #24262C; --line: #3C3F48; --text: #E6E7EA; --text2: #A3A6AE;
+  --accent: #2FA4A9; --accent-hi: #45C2C7; --red: #E5584F; --green: #3FB27F; --amber: #E0A84B;
+  --font: 'Segoe UI', Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 var(--font); }
+main, .top, .banner { max-width: 720px; margin: 0 auto; }
+main { padding: 0 20px 30px; }
+.top { padding: 16px 20px 10px; }
+.top h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.2px; }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; margin-bottom: 14px; }
+.card h2 { margin: 0 0 4px; font-size: 17px; font-weight: 600; }
+.card p { margin: 4px 0 8px; }
+.card.warn { border-left: 4px solid var(--amber); }
+.card.warn h2 { color: var(--amber); }
+.hint { color: var(--text2); font-size: 12.5px; }
+.problem { color: var(--red); }
+.ok { color: var(--green); }
+.grow { flex: 1; }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 8px 0; }
+.label { margin: 12px 0 4px; font-size: 11.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); }
+.path { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text2); font-size: 13px; }
+
+input { font: inherit; color: var(--text); background: var(--card2); border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; width: 100%; }
+input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+select { font: inherit; color: var(--text); background: var(--card2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
+select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+input[type="checkbox"], input[type="radio"] { width: 16px; height: 16px; flex: none; margin: 2px 0 0; accent-color: var(--accent); }
+.field { display: flex; flex-direction: column; gap: 3px; margin: 8px 0; font-size: 12.5px; color: var(--text2); }
+button { font: inherit; color: var(--text); background: #3A3D46; border: 1px solid #4A4E59; border-radius: 6px; padding: 6px 14px; cursor: pointer; }
+button:hover { background: #454955; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #0D2526; font-weight: 600; }
+button.primary:hover { background: var(--accent-hi); }
+button.danger { background: var(--red); border-color: var(--red); color: #fff; }
+button:disabled { opacity: 0.4; cursor: default; }
+
+.banner { display: flex; gap: 10px; align-items: center; margin: 0 auto 10px; padding: 8px 20px; background: #2E3A2F;
+  border: 1px solid var(--green); border-radius: 8px; }
+
+/* ---------- The setup steps ---------- */
+.progress { list-style: none; display: flex; gap: 6px; padding: 0; margin: 4px 0 14px; counter-reset: step; }
+.progress li { flex: 1; counter-increment: step; color: var(--text2); font-size: 13px; padding-top: 8px; border-top: 3px solid var(--line); }
+.progress li::before { content: counter(step) '. '; }
+.progress li.current { color: var(--text); border-top-color: var(--accent); }
+.progress li.done { border-top-color: #2A6E71; }
+.progress li.done::before { content: '✓ '; }
+.step h2 { font-size: 21px; margin-bottom: 6px; }
+.nav { display: flex; gap: 10px; align-items: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+.more { margin: 10px 0 0; }
+.more summary { cursor: pointer; color: var(--text2); font-size: 13px; }
+.connected { padding: 10px 12px; border: 1px solid var(--green); border-radius: 6px; background: rgba(63,178,127,0.08); }
+.connected p { margin: 0 0 8px; }
+.how { margin: 8px 0 10px; padding-left: 22px; }
+.how li { margin: 3px 0; }
+
+/* ---------- Lists ---------- */
+.list { list-style: none; margin: 8px 0; padding: 0; }
+.list.bare, .list.inner { margin: 8px 0 0; }
+.item { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 12px; margin-bottom: 8px;
+  border: 1px solid var(--line); border-radius: 6px; background: var(--card2); }
+.list.bare .item { margin: 0; border: none; background: none; padding: 0; }
+.list.inner .item { margin: 0 0 6px 24px; background: var(--card); }
+.item .name { font-size: 15px; font-weight: 600; }
+.item .sub { font-size: 12.5px; color: var(--text2); }
+.swatch { width: 6px; height: 32px; border-radius: 3px; flex: none; background: var(--line); }
+.plugin { display: block; }
+.plugin-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.plugin-name { font-size: 16px; font-weight: 600; }
+.channel { display: block; background: var(--card); }
+.channel .head { margin: 0; align-items: flex-start; }
+.channel.open { border-color: var(--accent); }
+.editor { margin-top: 8px; }
+.follow { padding: 10px 0 6px; border-top: 1px solid var(--line); }
+.found { border-color: var(--accent); }
+
+.ticks { display: flex; flex-direction: column; gap: 7px; margin: 4px 0; }
+.tick { display: flex; gap: 9px; align-items: flex-start; cursor: pointer; }
+.tick-text { display: flex; flex-direction: column; }
+.tick-help { color: var(--text2); font-size: 12.5px; }
+.tag { margin-left: 8px; padding: 0 6px; border-radius: 9px; font-size: 11px; color: var(--accent-hi); border: 1px solid #2A6E71; }
+.role { margin: 6px 0 4px 25px; }
+.role input { max-width: 240px; }
+.role .field { margin: 2px 0; }
+
+/* A picture as Discord shows it. */
+.preview { margin: 12px 0 0; }
+.preview figcaption { font-size: 11.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); margin-bottom: 4px; }
+.preview img { display: block; width: 100%; border-radius: 4px; }
+.preview .wait { padding: 30px 0; text-align: center; background: var(--card2); border-radius: 4px; }
+
+/* ---------- Tabs ---------- */
+.tabs { display: flex; gap: 4px; margin: 2px 0 14px; border-bottom: 1px solid var(--line); }
+.tabs button { border: none; border-radius: 6px 6px 0 0; background: none; color: var(--text2); padding: 8px 14px; margin-bottom: -1px;
+  border-bottom: 2px solid transparent; }
+.tabs button:hover { background: rgba(255,255,255,0.04); }
+.tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); }
+.intro { color: var(--text2); margin: 0 0 10px; }
+
+.status { border-left: 6px solid var(--line); }
+.status.ok { border-left-color: var(--green); }
+.status.problem { border-left-color: var(--red); }
+.status.paused { border-left-color: var(--amber); }
+.big { font-size: 18px; font-weight: 600; margin: 0 0 4px !important; }
+.big.ok { color: var(--green); }
+.big.paused { color: var(--amber); }
+
+.log { list-style: none; margin: 0; padding: 0; font-size: 13px; color: var(--text2); max-height: 300px; overflow-y: auto; }
+.log li { padding: 4px 0; border-bottom: 1px solid var(--line); }
+.log li:last-child { border-bottom: none; }
+.log li.bad { color: var(--red); }
+.item p { margin: 4px 0 0; }
+
+/* ---------- Flows (SPEC §5.1): what the addons post on the left, Discord on the right, lines between ---------- */
+:root { --kind: #2FA4A9; --chan: #E0895A; --thread: #C9A25A; }
+body.wide main, body.wide .top, body.wide .banner { max-width: 1060px; }
+.toolbar { margin: 0 0 8px; }
+.flowgrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+@media (min-width: 900px) { body.wide .flowgrid { grid-template-columns: minmax(0, 1fr) 320px; align-items: start; } }
+.canvas-wrap { border: 1px solid var(--line); border-radius: 8px; background: var(--card2); }
+.canvas { position: relative; touch-action: none; user-select: none; }
+.wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.wire { fill: none; stroke: #7C808C; stroke-width: 1.6; }
+.wire.lit, .wire.hover { stroke: #C9CCD4; stroke-width: 2.2; }
+.wire.selected { stroke: var(--accent-hi); stroke-width: 2.6; }
+.wire.temp { stroke: var(--accent-hi); stroke-dasharray: 5 4; }
+.wire-hit { fill: none; stroke: transparent; stroke-width: 12; pointer-events: stroke; cursor: pointer; }
+.col-head { position: absolute; font-size: 12.5px; font-weight: 600; color: var(--text); }
+.tree-plugin { position: absolute; left: 4px; font-size: 11.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); }
+.tree-group { position: absolute; height: 24px; padding: 0 6px; text-align: left; font-size: 13px; background: none; border: none;
+  color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tree-group:hover { background: rgba(255,255,255,0.05); }
+.fempty { position: absolute; margin: 0; }
+.fbox { position: absolute; min-height: 44px; display: flex; flex-direction: column; justify-content: center; padding: 5px 14px 6px 10px;
+  border: 1px solid #4A4E59; border-radius: 6px; background: var(--card); cursor: pointer; border-left: 4px solid var(--line); }
+.fbox.kind { border-left-color: var(--kind); }
+.fbox.channel { border-left-color: var(--chan); }
+.fbox.thread { border-left-color: var(--thread); min-height: 40px; }
+.fbox:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 1px; }
+.fbox.selected { border-top-color: var(--accent-hi); border-right-color: var(--accent-hi); border-bottom-color: var(--accent-hi); }
+.fbox.target { border-color: var(--accent-hi); background: #2E3A3B; }
+.fbox-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fbox-sub { font-size: 11.5px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fbox-msg { position: absolute; right: -4px; top: calc(100% + 4px); z-index: 3; width: 220px; padding: 6px 8px; border-radius: 6px;
+  background: #3A2526; border: 1px solid var(--red); color: #F3C1BD; font-size: 12px; font-weight: 400; white-space: normal; }
+.port { position: absolute; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: var(--card2);
+  border: 2px solid #8A8E99; }
+.port.in { left: -7px; }
+.port.out { right: -7px; cursor: crosshair; border-color: var(--accent); }
+.port.out:hover { background: var(--accent); }
+/* A line's rules, as a tag on it. */
+.ftag { position: absolute; z-index: 2; height: 20px; padding: 0 8px; font-size: 11.5px; line-height: 18px; border-radius: 10px;
+  background: #30333B; border: 1px solid #5A5E69; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ftag:hover { background: #3A3D46; border-color: var(--accent-hi); }
+.ftag.selected { border-color: var(--accent-hi); color: var(--accent-hi); }
+.danger-text { color: #F09595 !important; }
+.panel { margin: 0; }
+.panel h3 { margin: 0 0 6px; font-size: 15px; }
+.panel .time { width: 110px; }
+.panel .rule { padding: 6px 0 2px; border-top: 1px solid var(--line); margin-top: 8px; }
+.panel .rule > .tick .tick-label, .rule-head { font-weight: 600; }
+.rule-head { margin: 6px 0 4px; }
+.indent { margin-left: 25px; }
+p.indent { margin-top: 0; }
+.panel .indent .field { margin: 4px 0; }
+.lines { list-style: none; margin: 4px 0; padding: 0; font-size: 13px; }
+.lines li { display: flex; gap: 8px; align-items: center; padding: 3px 0; border-bottom: 1px solid var(--line); }
+.line-rules { display: block; font-size: 11.5px; color: var(--text2); }
+button.small { padding: 2px 8px; font-size: 12px; }
+.sendto { gap: 6px; }
+.sendto button { padding: 3px 10px; font-size: 12.5px; }
+.flowrows ul { list-style: none; margin: 4px 0 0; padding: 0; font-size: 13.5px; }
+.flowrows li { padding: 5px 0; border-bottom: 1px solid var(--line); }
+.flowrows li.warn { color: var(--text2); }
+.flowrows .note { margin-left: 8px; color: var(--amber); }
+.panel .tick { align-items: center; margin: 6px 0; }
+.panel .row .tick { margin: 0; }
+.panel input.time { padding: 4px 8px; }
+.panel .row.times { gap: 6px; flex-wrap: nowrap; }
+.panel .row.times .time { width: 96px; min-width: 0; }
+.panel .onlyrow { flex-wrap: nowrap; }
+.panel .onlyrow select { flex: none; max-width: 120px; }
+.panel .onlyrow input { flex: 1; min-width: 0; }
+/* What Discord shows: a message as Discord draws it. */
+.sample { margin-top: 10px; padding-top: 2px; border-top: 1px solid var(--line); }
+.dmsg { display: flex; gap: 10px; padding: 8px 10px; border-radius: 6px; background: #313338; }
+.dmsg-av { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); flex: none; }
+.dmsg-body { min-width: 0; }
+.dmsg-who { font-weight: 600; font-size: 13px; }
+.dmsg-text { font-size: 13px; white-space: pre-wrap; word-break: break-word; }
+.dmsg-mention { color: #C9CDFB; background: rgba(88,101,242,0.3); border-radius: 3px; padding: 0 2px; }
+.pin-ask { display: flex; gap: 10px; align-items: center; margin-top: 4px; color: var(--amber); }

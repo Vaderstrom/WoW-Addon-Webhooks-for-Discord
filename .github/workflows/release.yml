@@ -1,0 +1,21 @@
+# Builds the Windows installer and publishes it, with the update feed (latest.yml), on this repository's Releases
+# when a tag like v0.1.0 is pushed. The installed app updates from there (docs/SPEC.md §10).
+name: Release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm test
+      - run: npx electron-builder --win --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

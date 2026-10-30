@@ -1,0 +1,20 @@
+{
+  "contract": 1,
+  "id": "example-tracker",
+  "name": "Example Tracker",
+  "author": "Addon Webhooks",
+  "version": "1.0.0",
+  "savedVariables": "ExampleTracker",
+  "outbox": "ExampleTrackerDB.webhooks",
+  "group": "team",
+  "kinds": [
+    { "id": "standings", "type": "kept", "name": "Standings", "help": "One picture of the team, kept up to date.", "default": true },
+    { "id": "win", "type": "news", "name": "Match won", "help": "A new post for every match the team wins.", "default": true },
+    { "id": "level", "type": "news", "name": "Level up", "help": "A new post when someone gains a level.", "mention": true }
+  ],
+  "templates": { "standings": "card.html" },
+  "fields": {
+    "win": [ { "id": "opponent", "name": "Opponent", "type": "text" }, { "id": "who", "name": "Who", "type": "names" } ],
+    "level": [ { "id": "level", "name": "Level", "type": "number" } ]
+  }
+}

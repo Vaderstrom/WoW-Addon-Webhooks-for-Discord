@@ -1,0 +1,58 @@
+{
+  "name": "wow-addon-webhooks-for-discord",
+  "productName": "WoW Addon Webhooks for Discord",
+  "version": "0.1.0",
+  "description": "Posts World of Warcraft addons' news to Discord channels through webhooks.",
+  "author": "Vaderstrom",
+  "license": "MIT",
+  "repository": "github:Vaderstrom/WoW-Addon-Webhooks-for-Discord",
+  "private": true,
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test \"test/*.test.js\"",
+    "dist": "electron-builder --win --publish never"
+  },
+  "build": {
+    "appId": "com.addonwebhooks.discord",
+    "productName": "WoW Addon Webhooks for Discord",
+    "directories": {
+      "output": "out/dist"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "Vaderstrom",
+      "repo": "WoW-Addon-Webhooks-for-Discord",
+      "releaseType": "release"
+    },
+    "files": [
+      "src/**/*",
+      "!src/dev/**",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "artifactName": "WoW-Addon-Webhooks-for-Discord-Setup-${version}.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "44.7.2",
+    "electron-builder": "26.17.0"
+  },
+  "dependencies": {
+    "electron-updater": "6.8.10"
+  }
+}

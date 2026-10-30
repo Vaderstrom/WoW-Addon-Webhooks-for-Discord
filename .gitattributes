@@ -1,0 +1,10 @@
+# Text files are stored and checked out with LF line endings (WoW reads both).
+* text=auto eol=lf
+# Pictures are binary.
+*.tga binary
+*.blp binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.zip binary
+*.lua text

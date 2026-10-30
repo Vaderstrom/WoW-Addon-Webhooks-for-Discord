@@ -1,0 +1,25 @@
+<!doctype html><html><body><div id="card" style="width:300px;height:100px;background:#333;color:#fff">probe</div>
+<script>
+  // Everything a template must not be able to do (src/dev/check-sandbox.js reads the answers).
+  async function tryFetch(url) { try { const r = await fetch(url); return 'LOADED ' + r.status; } catch (e) { return 'blocked'; } }
+  function tryImage(url) { return new Promise((res) => { const i = new Image(); i.onload = () => res('LOADED'); i.onerror = () => res('blocked'); i.src = url; }); }
+  window.webhookCard = {
+    async render(data, ctx) {
+      const out = {
+        node: typeof require === 'undefined' && typeof process === 'undefined' ? 'none' : 'NODE',
+        https: await tryFetch('https://example.com/'),
+        file: await tryFetch('file:///C:/Windows/win.ini'),
+        image: await tryImage('https://example.com/x.png'),
+        otherPlugin: await tryFetch('plugin://example-tracker/card.html'),
+        escape: await tryFetch('plugin://evil-check/..%2F..%2Fpackage.json'),
+        own: await tryFetch('plugin://evil-check/webhooks.json'),
+        asset: ctx.asset('../webhooks.json'),
+        // Drawn without a game: no game art, and no other path to the game's files.
+        game: await ctx.game(131833),
+        gamePath: await tryFetch('plugin://evil-check/game:..%2F..%2Fwin.ini'),
+      };
+      document.title = JSON.stringify(out);
+      return document.getElementById('card');
+    },
+  };
+</script></body></html>

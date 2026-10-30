@@ -1,0 +1,16 @@
+{
+  "contract": 1,
+  "id": "simple-scores",
+  "name": "Simple Scores for Discord",
+  "author": "Addon Webhooks",
+  "version": "1.0.0",
+  "for": "SimpleScores",
+  "savedVariables": "SimpleScores",
+  "script": "plugin.js",
+  "group": "account",
+  "kinds": [
+    { "id": "scores", "type": "kept", "name": "Scores", "help": "One message with every character's level and kills, kept up to date.", "default": true },
+    { "id": "level", "type": "news", "name": "Level up", "help": "A new post when a character gains a level.", "default": true }
+  ],
+  "fields": { "level": [ { "id": "level", "name": "Level", "type": "number" }, { "id": "who", "name": "Who", "type": "names" } ] }
+}

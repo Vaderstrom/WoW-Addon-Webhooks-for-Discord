@@ -224,7 +224,7 @@ function createPoster(deps) {
 
   // ---------- A run ----------
 
-  // reason: 'file' (saved data changed), 'timer' (a step or the weekly summary is due), 'now' (Update Discord now:
+  // reason: 'file' (saved data changed), 'timer' (a step or the weekly summary is due), 'now' (Send to Discord now:
   // every kept message edited), 'setup' (the end of setup: kept messages posted, no backlog).
   async function sync(reason) {
     const now = deps.now();

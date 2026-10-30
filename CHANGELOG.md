@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 0.1.3 (30 Oct 2026)
+- Electron 44.9.1 (was 44.7.2), for a security fix: it stops trusting the compromised eMudhra intermediate
+  certificates (GHSA-jr5w-w6x2-84p9).
+- The taskbar showed Electron's icon instead of the crest (and notices could be named Electron): the app gave
+  Windows another id than its installer's shortcut. It now uses the installer's, `com.addonwebhooks.discord`.
+- **Update Discord now** is now **Send to Discord now** (it read like an update of the app), and it moved from Home
+  and the tray to Settings: the app posts by itself after each game session, so it is only for setting up or
+  testing. Several boards to pin say "Pin them", not "Pin it".
+
 ## 0.1.2 (30 Oct 2026)
 - A new icon, the same in the window, the tray, Windows notices and the installer: the Journey Together Forever
   crest with three webhook nodes in it, drawn for each size Windows uses (`npx electron tools/make-icon.js`).

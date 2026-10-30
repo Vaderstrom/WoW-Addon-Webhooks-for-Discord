@@ -200,7 +200,7 @@ never posts by itself. A script that takes longer than 5 seconds or throws is st
 - **What it returned last time** is kept per game and account in the app's folder (`plugin-data\<id>\`, at most
   4 MB), so a restart does not lose it. Fields the app does not know are not used, but come back in `last`.
 - A kept message is edited when its group's `saved` time is newer, as for any addon: a newer version of a plugin
-  shows at its addon's next save, or with **Update Discord now**.
+  shows at its addon's next save, or with **Send to Discord now** (Settings).
 
 ## 7. Pictures from templates
 A plugin may bring an HTML page that draws a picture from the data its addon saved (Journey Together's board, from the
@@ -259,7 +259,9 @@ your game, and how it runs."; Channels and Addons: their hints below).
   - one status sentence: "Discord is up to date.", "Posting is paused.", or the problem, naming the addon and
     channel;
   - the last post, and "The game is running. …" while it runs;
-  - **Update Discord now**, and **Pause posting** / **Resume posting**;
+  - **Pause posting** / **Resume posting**. No button to post: the app posts by itself after each game session
+    (decided 30 Oct 2026; Send to Discord now is under Settings, for setting up or testing);
+  - several kept messages posted anew: "New in Discord: {what}. Pin them so everyone finds them.";
   - each addon in use, with its groups and what Discord shows.
 - **Channels** (the Flows page, §5.1):
   - on top, **Add a channel** and one hint: "Drag from a dot to a channel to send it there. Click a line for its
@@ -283,10 +285,12 @@ your game, and how it runs."; Channels and Addons: their hints below).
   - where the app looks;
   - "Show a Windows notice when something goes wrong";
   - "Start with Windows (it waits in the tray)";
+  - **Send to Discord now** (its old name Update Discord now read like an app update), with "Only for setting up or
+    testing: the app posts by itself after each game session. This sends anything new at once, without waiting.";
   - **Recent posts**: the last 50 posts and failures (when, addon, channel, group, what, and the line's rules);
   - at the bottom, "Not made by or affiliated with Blizzard Entertainment or Discord. …" (§1).
 
-**The tray**: **Open**, **Update Discord now**, **Pause posting** / **Resume posting**, **Quit** (and **Download and
+**The tray**: **Open**, **Pause posting** / **Resume posting**, **Quit** (and **Download and
 update to {version}** when one is out, §10). Closing the window keeps the app in the tray.
 
 **A new version** (§10) shows at the top of every page: "Version {version} is out. You have {current}." with
@@ -336,6 +340,8 @@ More info → Run anyway). Addons that bring a plugin say on their CurseForge pa
 
   **Download and update** downloads it with the progress in the window, then installs and starts again; a failed
   download says so with **Try again**. Not while developing.
+- The installed app tells Windows the installer's app id (`build.appId`, `com.addonwebhooks.discord`), so the
+  taskbar and notices take the crest and the name from its Start menu shortcut; a development run uses another id.
 - The installer puts the app in `%LOCALAPPDATA%\Programs\wow-addon-webhooks-for-discord`, with a Start menu and
   a desktop shortcut. Uninstalling (Windows Settings → Apps) leaves the settings in
   `%APPDATA%\WoW Addon Webhooks for Discord`.

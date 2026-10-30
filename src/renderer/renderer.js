@@ -294,7 +294,7 @@
     const pins = s.pinAsks || [];
     if (pins.length) {
       const line = el('div', 'pin-ask');
-      line.append(el('span', null, fill(T.pinAgain, { what: pins.map((x) => fill(T.pinWhat, x)).join('; ') })),
+      line.append(el('span', null, fill(pins.length > 1 ? T.pinAgainMany : T.pinAgain, { what: pins.map((x) => fill(T.pinWhat, x)).join('; ') })),
         button(T.pinDone, async () => { await api.clearPinAsks(); refresh(); }, 'small'));
       lines.push(line);
     }

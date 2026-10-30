@@ -51,7 +51,11 @@ if (CHECK) return check.run(CHECK);
 
 if (DEV.AWD_USER_DATA) app.setPath('userData', DEV.AWD_USER_DATA);
 if (!app.requestSingleInstanceLock()) app.quit();
-app.setAppUserModelId('WoW Addon Webhooks for Discord');
+// Windows takes the taskbar icon and the notices' name from the Start menu shortcut with the same id: the installer's
+// carries build.appId (package.json; the packed app's package.json has no build section, so it is written here too, and
+// a test checks the two match). A development run keeps an id of its own, so it never takes the installed app's.
+const APP_ID = 'com.addonwebhooks.discord';
+app.setAppUserModelId(app.isPackaged ? APP_ID : 'WoW Addon Webhooks for Discord');
 registerScheme();
 
 let settings, poster, tray, win, lastStatus = null, debounce = null, gameRunning = false, noticed = null, gameArt = null;
@@ -279,7 +283,6 @@ function trayMenu() {
   tray.setContextMenu(Menu.buildFromTemplate([
     ...(update && update.state !== 'downloading' ? [{ label: fill(TEXTS['update.tray'], { version: update.version }), click: downloadUpdate }, { type: 'separator' }] : []),
     { label: TEXTS.trayOpen, click: openWindow },
-    { label: TEXTS.postNow, click: () => sync('now') },
     { label: paused ? TEXTS.resume : TEXTS.pause, click: () => { poster.setPaused(!paused); trayMenu(); sendStatus(); } },
     { type: 'separator' },
     { label: TEXTS.trayQuit, click: () => { app.isQuitting = true; app.quit(); } },

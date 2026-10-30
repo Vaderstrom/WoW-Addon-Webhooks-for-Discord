@@ -83,14 +83,14 @@ use with its groups and what Discord shows.
 
 ![Home](manual/04-home.png)
 
-- **Update Discord now** posts at once what is new, without waiting for the next save.
+- There is nothing to press: the app posts by itself after each game session.
 - **Pause posting** stops all posts until you press **Resume posting**. Nothing is posted twice when you resume, and
   old news is not posted.
 - If something goes wrong (a webhook was deleted, Discord cannot be reached), Home says what, naming the addon and
   the channel. A board you deleted in Discord is posted again, and Home names it so you can pin it.
 
 **Closing the window keeps the app running in the tray** (by the clock), where it waits for your next game session.
-Right-click the tray icon for **Open**, **Update Discord now**, **Pause posting** and **Quit**.
+Right-click the tray icon for **Open**, **Pause posting** and **Quit**.
 
 ## Channels: what goes where
 **Channels** is the same board as setup's step 3, for later changes. Drag from a kind's dot to a channel to draw a line;
@@ -137,6 +137,8 @@ and nothing else; it cannot see your webhook links or reach the internet.
 - **Show a Windows notice when something goes wrong.**
 - **Start with Windows**: the app starts in the tray when you log in to Windows, so posts never wait for you to open
   it.
+- **Send to Discord now**: only for setting up or testing. It sends anything new at once instead of waiting for
+  your next game session. (It never updates the app: that is **Download and update**, under Updates.)
 - **Recent posts**: the last 50 posts and failures, with the line's rules.
 
 ## Updates

@@ -81,8 +81,9 @@ function fromCompanionSettings() {
 function addonsFolders() {
   const folder = settings.get('wowFolder');
   if (!folder) return [];
-  const chosen = [...new Set(settings.get('sources').map((s) => s.flavor))];
-  return (chosen.length ? chosen : wow.flavors(folder)).map((f) => wow.addonsFolder(folder, f));
+  const chosen = new Set(settings.get('sources').map((s) => s.flavor));
+  // Forever first, as wow.flavors orders them, whatever order they were ticked in.
+  return wow.flavors(folder).filter((f) => !chosen.size || chosen.has(f)).map((f) => wow.addonsFolder(folder, f));
 }
 // Every plugin found or installed: [{ id, addon, plugin } | { id: null, addon, problem }] (a code plugin's with its
 // folder). A code plugin with the id of one found in an addon is not used: settings and lines go by id.
@@ -352,12 +353,17 @@ function useOnly(list, plugin) {
   for (const x of list) if (x.plugin && x.id !== plugin.id && x.plugin.savedVariables === plugin.savedVariables && settings.used(x.id)) settings.usePlugin(x.id, false);
 }
 
-// Every game and account in the WoW folder, ticked when watched. With nothing watched yet, the ones where a plugin
-// finds saved data are ticked (and saved).
+// Every game and account in the WoW folder, ticked when watched. A watched one that is gone (its WTF folder deleted)
+// is no longer watched: it was not shown, so it could not be unticked, and its AddOns folder still chose which copy of
+// an addon was read (7 Nov 2026: a Retail with only the Dev copy hid Forever's fellowships). With nothing watched, the
+// ones where a plugin finds saved data are ticked (and saved).
 function games(list) {
   const folder = settings.get('wowFolder');
   if (!folder) return [];
   const all = wow.games(folder);
+  const sources = settings.get('sources');
+  const still = sources.filter((s) => all.some((g) => g.flavor === s.flavor && g.account === s.account));
+  if (still.length < sources.length) { settings.setSources(still); watch(); }
   if (!settings.get('sources').length && all.length) {
     const names = list.filter((f) => f.plugin).map((f) => f.plugin.savedVariables);
     settings.setSources(all.filter((g) => wow.hasSaved(folder, g.flavor, g.account, names)));

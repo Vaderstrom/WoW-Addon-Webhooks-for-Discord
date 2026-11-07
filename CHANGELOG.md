@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.1.6 (7 Nov 2026)
+- A game version whose saved data was deleted (its WTF folder gone) stayed watched: it was no longer shown in
+  Settings, so it could not be unticked, and its AddOns folder still chose which copy of an addon was read. With a
+  Retail holding only Journey Together's Dev copy, WoW Forever's fellowships were hidden behind the Dev copy's empty
+  saved data ("Every fellowship" only). Such a game version is now dropped, and addons are looked for Forever first
+  whatever order the game versions were ticked in.
+
 ## 0.1.5 (30 Oct 2026)
 - A picture could fail on a cold start ("The picture could not be drawn", template: no frame painted): a fresh
   window's first paint is always empty, and it was taken for the picture when the real frame came more than 400 ms
